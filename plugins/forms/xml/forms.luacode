@@ -132,9 +132,19 @@ Lua code generation written by
         #utbl$name.m_mgr:SetManagedWindow( #utbl$name ) #nl
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl #utbl$name .m_mgr:Update() @}
+      #ifnotnull $min_client_size
+      @{ #nl #utbl$name:SetMinClientSize( $min_client_size ) @}
+
+      #ifnotnull $max_client_size
+      @{ #nl #utbl$name:SetMaxClientSize( $max_client_size ) @}
+
+      #ifnotnull $client_size
+      @{ #nl #utbl$name:SetClientSize( $client_size ) @}
+
       #ifnotnull $center
       @{ #nl #utbl$name:Centre( $center ) @}
     </template>
@@ -441,9 +451,19 @@ Lua code generation written by
         #utbl$name.m_mgr:SetManagedWindow( #utbl$name ) #nl
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl #utbl$name .m_mgr:Update() @}
+      #ifnotnull $min_client_size
+      @{ #nl #utbl$name:SetMinClientSize( $min_client_size ) @}
+
+      #ifnotnull $max_client_size
+      @{ #nl #utbl$name:SetMaxClientSize( $max_client_size ) @}
+
+      #ifnotnull $client_size
+      @{ #nl #utbl$name:SetClientSize( $client_size ) @}
+
       #ifnotnull $center
       @{ #nl #utbl$name:Centre( $center ) @}
     </template>

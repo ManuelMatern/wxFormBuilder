@@ -590,6 +590,9 @@ void VisualEditor::Create()
                 }
             }
 
+            // The main sizer occupies the client area, it gets moved into the frame widgets layout
+            wxSizer* clientSizer = m_back->GetFrameContentPanel()->GetSizer();
+
             if (menubar || statusbar || toolbar || m_auipanel || m_wizard) {
                 if (m_auimgr) {
                     m_back->SetFrameWidgets(menubar, NULL, statusbar, m_auipanel);
@@ -608,6 +611,26 @@ void VisualEditor::Create()
 
             // Set size after fitting so if only one dimesion is -1, it still fits that dimension
             m_back->SetSize(backSize);
+
+            // Client size of frames and dialogs, the client area excludes title bar, menu bar, tool bar and status bar
+            const wxSize clientSize(m_form->GetPropertyAsPixelSize(wxT("client_size"), m_back));
+            if (clientSize != wxDefaultSize) {
+                m_back->Layout();
+                wxSize clientArea = m_back->GetFrameContentPanel()->GetClientSize();
+                if (m_auipanel) {
+                    clientArea = m_auipanel->GetSize();
+                } else if (clientSizer) {
+                    clientArea = clientSizer->GetSize();
+                }
+                wxSize newSize = m_back->GetSize();
+                if (clientSize.GetWidth() != wxDefaultCoord) {
+                    newSize.IncBy(clientSize.GetWidth() - clientArea.GetWidth(), 0);
+                }
+                if (clientSize.GetHeight() != wxDefaultCoord) {
+                    newSize.IncBy(0, clientSize.GetHeight() - clientArea.GetHeight());
+                }
+                m_back->SetSize(newSize);
+            }
 
             PProperty enabled(m_form->GetProperty(wxT("enabled")));
             if (enabled) {

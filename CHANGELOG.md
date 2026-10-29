@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Add unit DIP for properties of type `wxPoint` and `wxSize` and for the sizer properties `border`, `vgap`, `hgap` and
   the spacer properties `width`, `height`, values in DIP get converted by `FromDIP()` in C++ (requires wxWidgets 3.1.0) and Python (requires wxPython 4.1)
   ([#356](https://github.com/wxFormBuilder/wxFormBuilder/issues/356), [#882](https://github.com/wxFormBuilder/wxFormBuilder/issues/882))
+- Add properties `client_size`, `min_client_size` and `max_client_size` to Frame and Dialog, they are applied after the
+  sizer fitted the window and before the window gets centered, the minimum and maximum client size override the
+  properties `minimum_size` and `maximum_size`
 
 ## [4.2.1] - 2024-05-29
 

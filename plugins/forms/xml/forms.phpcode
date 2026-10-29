@@ -126,9 +126,19 @@ PHP code generation written by
         @{ @$this->m_mgr->SetFlags($aui_manager_style); #nl @}
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl  @$this->m_mgr->Update(); @}
+      #ifnotnull $min_client_size
+      @{ #nl @$this->SetMinClientSize( $min_client_size ); @}
+
+      #ifnotnull $max_client_size
+      @{ #nl @$this->SetMaxClientSize( $max_client_size ); @}
+
+      #ifnotnull $client_size
+      @{ #nl @$this->SetClientSize( $client_size ); @}
+
       #ifnotnull $center
       @{ #nl  @$this->Centre( $center ); @}
     </template>
@@ -465,9 +475,19 @@ PHP code generation written by
         @{ @$this->m_mgr->SetFlags($aui_manager_style); #nl @}
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl @$this->m_mgr->Update(); @}
+      #ifnotnull $min_client_size
+      @{ #nl @$this->SetMinClientSize( $min_client_size ); @}
+
+      #ifnotnull $max_client_size
+      @{ #nl @$this->SetMaxClientSize( $max_client_size ); @}
+
+      #ifnotnull $client_size
+      @{ #nl @$this->SetClientSize( $client_size ); @}
+
       #ifnotnull $center
       @{ #nl @$this->Centre( $center ); @}
     </template>
