@@ -38,6 +38,28 @@
 
 static const int ID_TIMER_SCAN = wxWindow::NewControlId();
 
+namespace
+{
+/**
+ * Convert a wxPoint or wxSize value in pixels of the window to a property value, the unit of the property is kept.
+ */
+wxString PixelSizeToValue(PProperty property, const wxSize& size, const wxWindow* window)
+{
+    if (property->IsDip()) {
+#if wxCHECK_VERSION(3, 1, 0)
+        const auto dipSize = wxWindow::ToDIP(size, window);
+#else
+        // wxWidgets 3.0 does not scale with the DPI, DIP equal pixels
+        const auto dipSize = size;
+        wxUnusedVar(window);
+#endif
+        return TypeConv::JoinDimensionUnit(TypeConv::SizeToString(dipSize), TypeConv::DimensionUnit::DIP);
+    }
+
+    return TypeConv::SizeToString(size);
+}
+}  // namespace
+
 BEGIN_EVENT_TABLE(VisualEditor, wxScrolledWindow)
 // EVT_SASH_DRAGGED(wxID_ANY, VisualEditor::OnResizeBackPanel)
 // EVT_COMMAND(wxID_ANY, wxEVT_PANEL_RESIZED, VisualEditor::OnResizeBackPanel)
@@ -150,7 +172,7 @@ void VisualEditor::OnResizeBackPanel(wxCommandEvent&)  //(wxSashEvent &event)
     if (form) {
         PProperty prop(form->GetProperty(wxT("size")));
         if (prop) {
-            wxString value(TypeConv::PointToString(wxPoint(m_back->GetSize().x, m_back->GetSize().y)));
+            wxString value(PixelSizeToValue(prop, m_back->GetSize(), m_back));
             AppData()->ModifyProperty(prop, value);
         }
     }
@@ -267,8 +289,9 @@ void VisualEditor::ScanPanes(wxWindow* parent)
                             wxPoint pos = inf.floating_pos;
                             if (pos.x != -1 && pos.y != -1) {
                                 PProperty pposition = obj->GetProperty(wxT("pane_position"));
-                                if (pposition->GetValue() != TypeConv::PointToString(pos)) {
-                                    pposition->SetValue(TypeConv::PointToString(pos));
+                                const auto value = PixelSizeToValue(pposition, wxSize(pos.x, pos.y), m_auipanel);
+                                if (pposition->GetValue() != value) {
+                                    pposition->SetValue(value);
                                     updateNeeded = true;
                                 }
                             }
@@ -277,9 +300,10 @@ void VisualEditor::ScanPanes(wxWindow* parent)
                             wxSize paneSize = inf.floating_size;
                             if (paneSize.x != -1 && paneSize.y != -1) {
                                 PProperty psize = obj->GetProperty(wxT("pane_size"));
+                                const auto value = PixelSizeToValue(psize, paneSize, m_auipanel);
 
-                                if (psize->GetValue() != TypeConv::SizeToString(paneSize)) {
-                                    psize->SetValue(TypeConv::SizeToString(paneSize));
+                                if (psize->GetValue() != value) {
+                                    psize->SetValue(value);
                                     obj->GetProperty(wxT("resize"))->SetValue(wxT("Resizable"));
 
                                     updateNeeded = true;
@@ -416,13 +440,13 @@ void VisualEditor::Create()
             // --- [1] Configure the size of the form ---------------------------
 
             // Get size properties
-            wxSize minSize(m_form->GetPropertyAsSize(wxT("minimum_size")));
+            wxSize minSize(m_form->GetPropertyAsPixelSize(wxT("minimum_size"), m_back));
             m_back->SetMinSize(minSize);
 
-            wxSize maxSize(m_form->GetPropertyAsSize(wxT("maximum_size")));
+            wxSize maxSize(m_form->GetPropertyAsPixelSize(wxT("maximum_size"), m_back));
             m_back->SetMaxSize(maxSize);
 
-            wxSize size(m_form->GetPropertyAsSize(wxT("size")));
+            wxSize size(m_form->GetPropertyAsPixelSize(wxT("size"), m_back));
 
             // Determine necessary size for back panel
             wxSize backSize = size;
@@ -723,7 +747,7 @@ void VisualEditor::Generate(PObjectBase obj, wxWindow* wxparent, wxObject* paren
 
 void VisualEditor::SetupSizer(PObjectBase obj, wxSizer* sizer)
 {
-    wxSize minsize = obj->GetPropertyAsSize(wxT("minimum_size"));
+    wxSize minsize = obj->GetPropertyAsPixelSize(wxT("minimum_size"), sizer->GetContainingWindow());
     if (minsize != wxDefaultSize) {
         sizer->SetMinSize(minsize);
         sizer->Layout();
@@ -745,19 +769,19 @@ void VisualEditor::SetupWindow(PObjectBase obj, wxWindow* window)
     */
 
     // Size
-    wxSize size = obj->GetPropertyAsSize(wxT("size"));
+    wxSize size = obj->GetPropertyAsPixelSize(wxT("size"), window);
     if (size != wxDefaultSize) {
         window->SetSize(size);
     }
 
     // Minimum size
-    wxSize minsize = obj->GetPropertyAsSize(wxT("minimum_size"));
+    wxSize minsize = obj->GetPropertyAsPixelSize(wxT("minimum_size"), window);
     if (minsize != wxDefaultSize) {
         window->SetMinSize(minsize);
     }
 
     // Maximum size
-    wxSize maxsize = obj->GetPropertyAsSize(wxT("maximum_size"));
+    wxSize maxsize = obj->GetPropertyAsPixelSize(wxT("maximum_size"), window);
     if (maxsize != wxDefaultSize) {
         window->SetMaxSize(maxsize);
     }
@@ -873,7 +897,7 @@ void VisualEditor::SetupAui(PObjectBase obj, wxWindow* window)
             }
         } else {
             info.Float();
-            info.FloatingPosition(obj->GetPropertyAsPoint(wxT("pane_position")));
+            info.FloatingPosition(obj->GetPropertyAsPixelPoint(wxT("pane_position"), m_auipanel));
         }
     }
 
@@ -889,13 +913,13 @@ void VisualEditor::SetupAui(PObjectBase obj, wxWindow* window)
     info.Floatable(obj->GetPropertyAsInteger(wxT("floatable")) != 0);
 
     if (!obj->GetProperty(wxT("pane_size"))->IsNull())
-        info.FloatingSize(obj->GetPropertyAsSize(wxT("pane_size")));
+        info.FloatingSize(obj->GetPropertyAsPixelSize(wxT("pane_size"), m_auipanel));
     if (!obj->GetProperty(wxT("best_size"))->IsNull())
-        info.BestSize(obj->GetPropertyAsSize(wxT("best_size")));
+        info.BestSize(obj->GetPropertyAsPixelSize(wxT("best_size"), m_auipanel));
     if (!obj->GetProperty(wxT("min_size"))->IsNull())
-        info.MinSize(obj->GetPropertyAsSize(wxT("min_size")));
+        info.MinSize(obj->GetPropertyAsPixelSize(wxT("min_size"), m_auipanel));
     if (!obj->GetProperty(wxT("max_size"))->IsNull())
-        info.MaxSize(obj->GetPropertyAsSize(wxT("max_size")));
+        info.MaxSize(obj->GetPropertyAsPixelSize(wxT("max_size"), m_auipanel));
 
     if (obj->GetPropertyAsInteger(wxT("toolbar_pane")) != 0) {
         info.ToolbarPane();
@@ -1198,7 +1222,7 @@ void DesignerWindow::DrawRectangle(wxDC& dc, const wxPoint& point, const wxSize&
       (object->GetObjectInfo()->IsSubclassOf(wxT("sizer")) || object->GetObjectInfo()->IsSubclassOf(wxT("gbsizer")));
     int min = (isSizer ? 0 : 1);
 
-    int border = object->GetParent()->GetPropertyAsInteger(wxT("border"));
+    int border = object->GetParent()->GetPropertyAsPixels(wxT("border"), this);
     if (border == 0) {
         border = min;
     }

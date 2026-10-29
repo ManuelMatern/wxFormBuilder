@@ -151,7 +151,8 @@ wxString LuaTemplateParser::ValueToCode(PropertyType type, const wxString& value
         case PT_TEXT_ML:
         case PT_FLOAT:
         case PT_INT:
-        case PT_UINT: {
+        case PT_UINT:
+        case PT_DIMENSION: {
             result = value;
             break;
         }

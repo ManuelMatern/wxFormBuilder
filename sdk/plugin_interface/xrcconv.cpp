@@ -33,6 +33,21 @@
 #include <common/xmlutils.h>
 
 
+/**
+ * Remove the unit suffix of dimension, wxPoint and wxSize property values.
+ *
+ * XRC interprets all values as DIP since wxWidgets 3.1.0, values in pixels and DIP are written the same way.
+ */
+static wxString DimensionToXrcText(const wxString& str)
+{
+    auto value = str;
+    if (value.Lower().Trim().EndsWith("dip")) {
+        value.Trim().RemoveLast(3).Trim();
+    }
+
+    return value;
+}
+
 static wxString StringToXrcText(const wxString& str)
 {
     wxString result;
@@ -166,9 +181,11 @@ void ObjectToXrcFilter::AddProperty(Type propType, const wxString& objPropName, 
         case Type::Float:
             SetFloat(propertyElement, m_obj->GetPropertyAsFloat(objPropName));
             break;
-        case Type::String:
         case Type::Point:
         case Type::Size:
+            SetText(propertyElement, DimensionToXrcText(m_obj->GetPropertyAsString(objPropName)), false);
+            break;
+        case Type::String:
         case Type::Option:
         case Type::BitList:
             SetText(propertyElement, m_obj->GetPropertyAsString(objPropName), false);
