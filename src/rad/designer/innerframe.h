@@ -70,6 +70,7 @@ public:
     wxString GetTitle();
 
     void SetTitleStyle(long style);
+    void SetTitleIcon(const wxBitmap& icon);
 
     void ShowTitleBar(bool show = true);
     void SetToBaseSize();
