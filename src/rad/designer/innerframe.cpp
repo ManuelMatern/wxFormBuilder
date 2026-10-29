@@ -51,7 +51,7 @@ private:
     long m_style;
 
 protected:
-    wxSize DoGetBestSize() const override { return wxSize(100, 19); }
+    wxSize DoGetBestSize() const override { return FromDIP(wxSize(100, 19)); }
 
 public:
     TitleBar(
@@ -95,7 +95,15 @@ wxInnerFrame::TitleBar::TitleBar(wxWindow* parent, wxWindowID id, const wxPoint&
 
     m_colour2 = wxColour(r, g, b);
     m_titleText = wxT("wxFormBuilder rocks!");
-    SetMinSize(wxSize(100, 19));
+    SetMinSize(FromDIP(wxSize(100, 19)));
+
+    // the height of the title bar depends on the size of the buttons, scale them with the DPI
+    for (auto* button : {&m_minimize, &m_minimizeDisabled, &m_maximize, &m_maximizeDisabled, &m_close, &m_closeDisabled}) {
+        const auto buttonSize = FromDIP(button->GetSize());
+        if (buttonSize != button->GetSize()) {
+            *button = wxBitmap(button->ConvertToImage().Scale(buttonSize.x, buttonSize.y, wxIMAGE_QUALITY_HIGH));
+        }
+    }
 }
 
 void wxInnerFrame::TitleBar::OnLeftClick(wxMouseEvent& event)
