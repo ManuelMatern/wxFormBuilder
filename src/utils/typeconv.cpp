@@ -122,7 +122,7 @@ std::string TypeConv::WxStringToAnsiString(const wxString& str)
     return std::string(str.mb_str(wxConvISO8859_1));
 }
 
-bool TypeConv::StringToPoint(const wxString& val, wxPoint* point)
+bool TypeConv::StringToPoint(const wxString& str, wxPoint* point)
 {
     wxPoint result;
 
@@ -130,6 +130,8 @@ bool TypeConv::StringToPoint(const wxString& val, wxPoint* point)
     wxString str_x, str_y;
     long val_x = -1, val_y = -1;
 
+    // The unit doesn't change the numeric value
+    const auto val = SplitDimensionUnit(str);
     if (val != wxT("")) {
         wxStringTokenizer tkz(val, wxT(","));
         if (tkz.HasMoreTokens()) {
@@ -206,6 +208,34 @@ wxString TypeConv::SizeToString(const wxSize& size)
     return value;
 }
 
+wxString TypeConv::SplitDimensionUnit(const wxString& str, DimensionUnit* unit)
+{
+    static const wxString dipSuffix = wxT("dip");
+
+    auto value = str;
+    auto valueUnit = DimensionUnit::Pixels;
+    if (str.Lower().Trim().EndsWith(dipSuffix)) {
+        value.Trim().RemoveLast(dipSuffix.length()).Trim();
+        valueUnit = DimensionUnit::DIP;
+    }
+    if (unit) {
+        *unit = valueUnit;
+    }
+
+    return value;
+}
+
+wxString TypeConv::JoinDimensionUnit(const wxString& str, DimensionUnit unit)
+{
+    switch (unit) {
+        case DimensionUnit::DIP:
+            return str + wxT("dip");
+        case DimensionUnit::Pixels:
+        default:
+            return str;
+    }
+}
+
 int TypeConv::GetMacroValue(const wxString& str)
 {
     int value = 0;
@@ -221,7 +251,8 @@ int TypeConv::GetMacroValue(const wxString& str)
 int TypeConv::StringToInt(const wxString& str)
 {
     long l = 0;
-    str.ToLong(&l);
+    // Dimension values can have a unit suffix
+    SplitDimensionUnit(str).ToLong(&l);
 
     return (int)l;
 }

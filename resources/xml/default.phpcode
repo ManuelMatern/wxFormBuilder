@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="PHP">
+  <!--
+    wxPHP has no wxWindow::FromDIP(), values of dimension, wxPoint and wxSize properties specified in DIP
+    are generated as physical pixels. See TemplateParser::DipValueToCode().
+  -->
 
   <templates class="Project">
     <template name="php_preamble">

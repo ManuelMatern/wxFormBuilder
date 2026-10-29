@@ -63,6 +63,21 @@ bool Property::IsDefaultValue()
     return (m_info->GetDefaultValue() == m_value);
 }
 
+bool Property::IsDip()
+{
+    switch (m_info->GetType()) {
+        case PT_WXPOINT:
+        case PT_WXSIZE:
+        case PT_DIMENSION: {
+            TypeConv::DimensionUnit unit;
+            TypeConv::SplitDimensionUnit(m_value, &unit);
+            return (unit == TypeConv::DimensionUnit::DIP);
+        }
+        default:
+            return false;
+    }
+}
+
 bool Property::IsNull()
 {
     switch (m_info->GetType()) {
@@ -728,6 +743,54 @@ std::vector<std::pair<int, int>> ObjectBase::GetPropertyAsVectorIntPair(const wx
     }
 
     return result;
+}
+
+namespace
+{
+template <typename T>
+T DipToPixels(const T& value, const wxWindow* window)
+{
+#if wxCHECK_VERSION(3, 1, 0)
+    return wxWindow::FromDIP(value, window);
+#else
+    // wxWidgets 3.0 does not scale with the DPI, DIP equal pixels
+    wxUnusedVar(window);
+    return value;
+#endif
+}
+}  // namespace
+
+int ObjectBase::GetPropertyAsPixels(const wxString& name, const wxWindow* window) const
+{
+    auto property = GetProperty(name);
+    if (property) {
+        auto value = property->GetValueAsInteger();
+        return (property->IsDip() ? DipToPixels(value, window) : value);
+    }
+
+    return 0;
+}
+
+wxPoint ObjectBase::GetPropertyAsPixelPoint(const wxString& name, const wxWindow* window) const
+{
+    auto property = GetProperty(name);
+    if (property) {
+        auto value = property->GetValueAsPoint();
+        return (property->IsDip() ? DipToPixels(value, window) : value);
+    }
+
+    return wxDefaultPosition;
+}
+
+wxSize ObjectBase::GetPropertyAsPixelSize(const wxString& name, const wxWindow* window) const
+{
+    auto property = GetProperty(name);
+    if (property) {
+        auto value = property->GetValueAsSize();
+        return (property->IsDip() ? DipToPixels(value, window) : value);
+    }
+
+    return wxDefaultSize;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

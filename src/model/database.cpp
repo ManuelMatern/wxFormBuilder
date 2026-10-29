@@ -1145,6 +1145,7 @@ void ObjectDatabase::InitPropertyTypes()
         {"wxString", PT_WXSTRING},
         {"wxPoint", PT_WXPOINT},
         {"wxSize", PT_WXSIZE},
+        {"dimension", PT_DIMENSION},
         {"wxFont", PT_WXFONT},
         {"wxColour", PT_WXCOLOUR},
         {"bitmap", PT_BITMAP},

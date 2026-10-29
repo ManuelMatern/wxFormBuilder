@@ -36,6 +36,8 @@
 #include <wx/propgrid/advprops.h>
 // clang-format on
 
+#include <vector>
+
 #include <plugin_interface/fontcontainer.h>
 
 
@@ -59,23 +61,37 @@ protected:
 };
 
 // -----------------------------------------------------------------------
-// wxFBPointProperty
+// wxFBDimensionProperty
 // -----------------------------------------------------------------------
 
-class wxFBPointProperty : public wxPGProperty
+/**
+ * Property for dimension, wxPoint and wxSize values with selectable unit.
+ *
+ * The value of this property is the property value string of the data model, e.g. "14,14" or "14,14dip".
+ * Every component of the value is a child property, followed by the unit child property.
+ */
+class wxFBDimensionProperty : public wxPGProperty
 {
-    WX_PG_DECLARE_PROPERTY_CLASS(wxFBPointProperty)
+    WX_PG_DECLARE_PROPERTY_CLASS(wxFBDimensionProperty)
 public:
-    wxFBPointProperty(
-      const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL, const wxPoint& value = wxPoint());
-    ~wxFBPointProperty() override;
+    /**
+     * @param components Labels of the value components, one component creates a non-negative dimension value,
+     *                   two components create a wxPoint or wxSize value.
+     */
+    wxFBDimensionProperty(
+      const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL, const wxString& value = wxString(),
+      const wxArrayString& components = wxArrayString());
 
     wxVariant ChildChanged(wxVariant& thisValue, int childIndex, wxVariant& childValue) const override;
 
     void RefreshChildren() override;
 
-protected:
-    void DoSetValue(const wxPoint& value) { m_value = WXVARIANT(value); }
+private:
+    void ParseValue(const wxString& value, std::vector<long>& numbers, bool& dip) const;
+    wxString ComposeValue(const std::vector<long>& numbers, bool dip) const;
+
+private:
+    size_t m_componentCount;
 };
 
 // -----------------------------------------------------------------------

@@ -29,6 +29,7 @@
 
 #include "model/objectbase.h"
 #include "rad/appdata.h"
+#include "utils/typeconv.h"
 #include "utils/wxfbexception.h"
 
 
@@ -67,12 +68,22 @@ void BufferedTextInputStream::readChar()
 
 
 TemplateParser::TemplateParser(PObjectBase obj, const wxString& _template) :
-    m_obj(obj), m_stream(_template), m_text(m_stream, wxT(" \t"), wxConvUTF8), m_in(m_text), m_indent(0)
+    m_obj(obj),
+    m_stream(_template),
+    m_text(m_stream, wxT(" \t"), wxConvUTF8),
+    m_in(m_text),
+    m_indent(0),
+    m_dipContext(DipContext::FormWindow)
 {
 }
 
 TemplateParser::TemplateParser(const TemplateParser& that, const wxString& _template) :
-    m_obj(that.m_obj), m_stream(_template), m_text(m_stream, wxT(" \t"), wxConvUTF8), m_in(m_text), m_indent(0)
+    m_obj(that.m_obj),
+    m_stream(_template),
+    m_text(m_stream, wxT(" \t"), wxConvUTF8),
+    m_in(m_text),
+    m_indent(0),
+    m_dipContext(that.m_dipContext)
 {
 }
 
@@ -109,10 +120,34 @@ wxString TemplateParser::ParseTemplate()
 wxString TemplateParser::PropertyToCode(PProperty property) const
 {
     if (property) {
-        return ValueToCode(property->GetType(), property->GetValue());
+        const auto type = property->GetType();
+        if (type == PT_DIMENSION || type == PT_WXPOINT || type == PT_WXSIZE) {
+            TypeConv::DimensionUnit unit;
+            auto value = TypeConv::SplitDimensionUnit(property->GetValue(), &unit);
+            if (type == PT_DIMENSION && unit == TypeConv::DimensionUnit::DIP) {
+                // A value in DIP is always a number, this avoids invalid code for e.g. "dip" without a number
+                value = wxString::Format(wxT("%d"), TypeConv::StringToInt(value));
+            }
+            const auto code = ValueToCode(type, value);
+            // Default values don't need a conversion
+            const auto isDefault =
+              (type == PT_DIMENSION ? TypeConv::StringToInt(value) == 0
+                                    : TypeConv::StringToPoint(value) == wxDefaultPosition);
+            if (unit == TypeConv::DimensionUnit::DIP && !isDefault && m_dipContext != DipContext::NoConversion) {
+                return DipValueToCode(type, code, m_dipContext);
+            }
+            return code;
+        }
+        return ValueToCode(type, property->GetValue());
     } else {
         return wxEmptyString;
     }
+}
+
+wxString TemplateParser::DipValueToCode(
+  PropertyType WXUNUSED(type), const wxString& code, DipContext WXUNUSED(context)) const
+{
+    return code;
 }
 
 

@@ -148,7 +148,8 @@ wxString PythonTemplateParser::ValueToCode(PropertyType type, const wxString& va
         case PT_TEXT_ML:
         case PT_FLOAT:
         case PT_INT:
-        case PT_UINT: {
+        case PT_UINT:
+        case PT_DIMENSION: {
             result = value;
             break;
         }
@@ -318,6 +319,17 @@ wxString PythonTemplateParser::ValueToCode(PropertyType type, const wxString& va
     }
 
     return result;
+}
+
+wxString PythonTemplateParser::DipValueToCode(
+  PropertyType WXUNUSED(type), const wxString& code, DipContext context) const
+{
+    // Without the form window (e.g. arguments of the base class constructor) the parent window is used
+    if (context == DipContext::FormWindow) {
+        return wxT("self.FromDIP( ") + code + wxT(" )");
+    } else {
+        return wxT("wx.Window.FromDIP( ") + code + wxT(", parent )");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -719,6 +731,13 @@ wxString PythonCodeGenerator::GetCode(PObjectBase obj, wxString name, bool silen
     _template = code_info->GetTemplate(name);
 
     PythonTemplateParser parser(obj, _template, m_i18n, m_useRelativePath, m_basePath, m_imagePathWrapperFunctionName);
+    if (name == wxT("cons_call")) {
+        // The base class constructor call contains the arguments evaluated before the form window exists
+        parser.SetDipContext(TemplateParser::DipContext::NoFormWindow);
+    } else if (name == wxT("cons_def")) {
+        // Default arguments get evaluated when the class is defined, before the application exists
+        parser.SetDipContext(TemplateParser::DipContext::NoConversion);
+    }
     wxString code = parser.ParseTemplate();
 
     return code;

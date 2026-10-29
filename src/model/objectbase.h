@@ -149,6 +149,10 @@ public:
 
     bool IsDefaultValue();
     bool IsNull();
+    /**
+     * Returns true if the value of a dimension, wxPoint or wxSize property is specified in DIP.
+     */
+    bool IsDip();
     void SetDefaultValue();
     void ChangeDefaultValue(const wxString& value) { m_info->m_def_value = value; }
 
@@ -480,6 +484,10 @@ public:
     wxArrayInt GetPropertyAsArrayInt(const wxString& name) const override;
     wxArrayString GetPropertyAsArrayString(const wxString& name) const override;
     std::vector<std::pair<int, int>> GetPropertyAsVectorIntPair(const wxString& name) const override;
+
+    int GetPropertyAsPixels(const wxString& name, const wxWindow* window) const override;
+    wxPoint GetPropertyAsPixelPoint(const wxString& name, const wxWindow* window) const override;
+    wxSize GetPropertyAsPixelSize(const wxString& name, const wxWindow* window) const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

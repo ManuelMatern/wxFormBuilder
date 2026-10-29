@@ -45,6 +45,29 @@ wxSize StringToSize(const wxString& str);
 wxString PointToString(const wxPoint& point);
 wxString SizeToString(const wxSize& size);
 
+/**
+ * Units of dimension, wxPoint and wxSize property values.
+ *
+ * Values in pixels are stored without suffix, values in DIP are stored with the suffix "dip", e.g. "14,14dip".
+ */
+enum class DimensionUnit {
+    Pixels,
+    DIP,
+};
+
+/**
+ * Split the unit suffix from a dimension, wxPoint or wxSize property value.
+ *
+ * @param str Property value
+ * @param unit If not null, receives the unit of the value
+ * @return The value without unit suffix, the value is returned unmodified if it has no suffix
+ */
+wxString SplitDimensionUnit(const wxString& str, DimensionUnit* unit = nullptr);
+/**
+ * Append the unit suffix to a dimension, wxPoint or wxSize property value without unit.
+ */
+wxString JoinDimensionUnit(const wxString& str, DimensionUnit unit);
+
 int BitlistToInt(const wxString& str);
 int GetMacroValue(const wxString& str);
 int StringToInt(const wxString& str);

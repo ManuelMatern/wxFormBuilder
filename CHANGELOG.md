@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Add unit DIP for properties of type `wxPoint` and `wxSize` and for the sizer properties `border`, `vgap`, `hgap` and
+  the spacer properties `width`, `height`, values in DIP get converted by `FromDIP()` in C++ (requires wxWidgets 3.1.0) and Python (requires wxPython 4.1)
+  ([#356](https://github.com/wxFormBuilder/wxFormBuilder/issues/356), [#882](https://github.com/wxFormBuilder/wxFormBuilder/issues/882))
+
 ## [4.2.1] - 2024-05-29
 
 ### Fixed

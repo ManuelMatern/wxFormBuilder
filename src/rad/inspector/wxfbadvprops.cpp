@@ -85,57 +85,99 @@ wxVariant wxFBSizeProperty::ChildChanged(wxVariant& thisValue, const int childIn
 }
 
 // -----------------------------------------------------------------------
-// wxFBPointProperty
+// wxFBDimensionProperty
 // -----------------------------------------------------------------------
 
 #if wxCHECK_VERSION(3, 1, 0)
-wxPG_IMPLEMENT_PROPERTY_CLASS(wxFBPointProperty, wxPGProperty, TextCtrl)
+wxPG_IMPLEMENT_PROPERTY_CLASS(wxFBDimensionProperty, wxPGProperty, TextCtrl)
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS(wxFBPointProperty, wxPGProperty, wxPoint, const wxPoint&, TextCtrl)
+WX_PG_IMPLEMENT_PROPERTY_CLASS(wxFBDimensionProperty, wxPGProperty, wxString, const wxString&, TextCtrl)
 #endif
 
-  wxFBPointProperty::wxFBPointProperty(const wxString& label, const wxString& name, const wxPoint& value) :
-  wxPGProperty(label, name)
+  wxFBDimensionProperty::wxFBDimensionProperty(
+    const wxString& label, const wxString& name, const wxString& value, const wxArrayString& components) :
+  wxPGProperty(label, name), m_componentCount(components.size())
 {
-    DoSetValue(value);
-    AddPrivateChild(new wxIntProperty(wxT("X"), wxPG_LABEL, value.x));
-    AddPrivateChild(new wxIntProperty(wxT("Y"), wxPG_LABEL, value.y));
-}
+    SetValue(WXVARIANT(value));
 
-wxFBPointProperty::~wxFBPointProperty()
-{
-}
-
-void wxFBPointProperty::RefreshChildren()
-{
-    if (GetChildCount() < 2)
-        return;
-
-    const wxPoint& point = wxPointRefFromVariant(m_value);
-
-    Item(0)->SetValue((long)point.x);
-    Item(1)->SetValue((long)point.y);
-}
-
-wxVariant wxFBPointProperty::ChildChanged(wxVariant& thisValue, const int childIndex, wxVariant& childValue) const
-{
-    wxPoint& point = wxPointRefFromVariant(thisValue);
-
-    wxVariant();
-
-    int val = childValue.GetLong();
-    switch (childIndex) {
-        case 0:
-            point.x = val;
-            break;
-        case 1:
-            point.y = val;
-            break;
+    std::vector<long> numbers;
+    bool dip;
+    ParseValue(value, numbers, dip);
+    for (size_t i = 0; i < m_componentCount; ++i) {
+        if (m_componentCount == 1) {
+            AddPrivateChild(new wxUIntProperty(components[i], wxPG_LABEL, numbers[i]));
+        } else {
+            AddPrivateChild(new wxIntProperty(components[i], wxPG_LABEL, numbers[i]));
+        }
     }
 
-    wxVariant newVariant;
-    newVariant << point;
-    return newVariant;
+    wxPGChoices unitChoices;
+    unitChoices.Add(_("Pixels"));
+    unitChoices.Add(_("DIP"));
+    auto* unitProp = new wxEnumProperty(_("Unit"), wxPG_LABEL, unitChoices, dip ? 1 : 0);
+    unitProp->SetHelpString(
+      _("Pixels:\nThe value is used as is.\n\n"
+        "DIP:\nThe value is specified in device independent pixels and gets scaled with the DPI of the window "
+        "by wxWindow::FromDIP(). Supported by C++ (wxWidgets >= 3.1.0) and Python (wxPython >= 4.1), Lua and PHP use the value as is.\n"
+        "XRC always interprets values as DIP since wxWidgets 3.1.0, regardless of this unit."));
+    AddPrivateChild(unitProp);
+}
+
+void wxFBDimensionProperty::RefreshChildren()
+{
+    if (GetChildCount() < m_componentCount + 1)
+        return;
+
+    std::vector<long> numbers;
+    bool dip;
+    ParseValue(m_value.GetString(), numbers, dip);
+    for (size_t i = 0; i < m_componentCount; ++i) {
+        Item(i)->SetValue(numbers[i]);
+    }
+    Item(m_componentCount)->SetValue(dip ? 1L : 0L);
+}
+
+wxVariant wxFBDimensionProperty::ChildChanged(
+  wxVariant& thisValue, const int childIndex, wxVariant& childValue) const
+{
+    std::vector<long> numbers;
+    bool dip;
+    ParseValue(thisValue.GetString(), numbers, dip);
+
+    if (static_cast<size_t>(childIndex) < m_componentCount) {
+        numbers[childIndex] = childValue.GetLong();
+    } else {
+        dip = (childValue.GetLong() == 1);
+    }
+
+    return WXVARIANT(ComposeValue(numbers, dip));
+}
+
+void wxFBDimensionProperty::ParseValue(const wxString& value, std::vector<long>& numbers, bool& dip) const
+{
+    TypeConv::DimensionUnit unit;
+    TypeConv::SplitDimensionUnit(value, &unit);
+    dip = (unit == TypeConv::DimensionUnit::DIP);
+
+    if (m_componentCount == 2) {
+        const auto point = TypeConv::StringToPoint(value);
+        numbers = {point.x, point.y};
+    } else {
+        numbers.assign(m_componentCount, TypeConv::StringToInt(value));
+    }
+}
+
+wxString wxFBDimensionProperty::ComposeValue(const std::vector<long>& numbers, bool dip) const
+{
+    wxString value;
+    for (size_t i = 0; i < numbers.size(); ++i) {
+        if (i > 0) {
+            value << wxT(",");
+        }
+        value << numbers[i];
+    }
+
+    return TypeConv::JoinDimensionUnit(value, dip ? TypeConv::DimensionUnit::DIP : TypeConv::DimensionUnit::Pixels);
 }
 
 // -----------------------------------------------------------------------

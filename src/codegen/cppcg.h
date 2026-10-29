@@ -59,6 +59,7 @@ public:
 protected:
     wxString RootWxParentToCode() const override;
     wxString ValueToCode(PropertyType type, const wxString& value) const override;
+    wxString DipValueToCode(PropertyType type, const wxString& code, DipContext context) const override;
 
 private:
     bool m_i18n;

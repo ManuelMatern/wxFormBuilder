@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <codegen language="Lua">
+  <!--
+    wxLua has no wxWindow::FromDIP(), values of dimension, wxPoint and wxSize properties specified in DIP
+    are generated as physical pixels. See TemplateParser::DipValueToCode().
+  -->
 
   <templates class="Project">
     <template name="lua_preamble">

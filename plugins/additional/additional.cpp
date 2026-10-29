@@ -578,7 +578,7 @@ public:
         }
 
         if (!obj->IsPropertyNull(_("margins"))) {
-            button->SetBitmapMargins(obj->GetPropertyAsSize(_("margins")));
+            button->SetBitmapMargins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
         }
 
         button->SetValue((obj->GetPropertyAsInteger(_("value")) != 0));
@@ -682,7 +682,7 @@ public:
         }
 
         if (!obj->IsPropertyNull(_("margins"))) {
-            button->SetBitmapMargins(obj->GetPropertyAsSize(_("margins")));
+            button->SetBitmapMargins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
         }
 
         button->SetValue((obj->GetPropertyAsInteger(_("value")) != 0));

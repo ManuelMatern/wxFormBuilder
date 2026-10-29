@@ -60,6 +60,7 @@ public:
 protected:
     wxString RootWxParentToCode() const override;
     wxString ValueToCode(PropertyType type, const wxString& value) const override;
+    // DipValueToCode() is not overridden, there is no DIP support, values in DIP are used as pixels
 
 private:
     bool m_i18n;

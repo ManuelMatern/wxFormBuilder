@@ -170,6 +170,15 @@ private:
     };
 
 public:
+    /**
+     * Context of the generated code for the conversion of values in DIP.
+     */
+    enum class DipContext {
+        FormWindow,    ///< The form window exists and is used for the conversion
+        NoFormWindow,  ///< The form window doesn't exist yet, e.g. constructor arguments of the form
+        NoConversion,  ///< No conversion possible, e.g. default arguments evaluated before the application exists
+    };
+
     TemplateParser(PObjectBase obj, const wxString& _template);
     TemplateParser(const TemplateParser& that, const wxString& _template);
     virtual ~TemplateParser();
@@ -185,6 +194,12 @@ public:
      */
     wxString ParseTemplate();
 
+    /**
+     * Set the context of the generated code for the conversion of values in DIP.
+     * The default is DipContext::FormWindow.
+     */
+    void SetDipContext(DipContext context) { m_dipContext = context; }
+
 protected:
     /**
      * Returns the code for a "wxWindow *parent" root attribute' name.
@@ -197,6 +212,19 @@ protected:
      * Generates the code from a property value.
      */
     virtual wxString ValueToCode(PropertyType type, const wxString& value) const = 0;
+
+    /**
+     * Generates the code to convert a value from DIP to pixels.
+     *
+     * The default implementation returns the value unmodified, this is used by languages
+     * that don't support DIP, the value is used as pixels then.
+     * This function is not called for DipContext::NoConversion.
+     *
+     * @param type Type of the value, one of PT_DIMENSION, PT_WXPOINT, PT_WXSIZE
+     * @param code Code of the value in DIP
+     * @param context Context of the generated code
+     */
+    virtual wxString DipValueToCode(PropertyType type, const wxString& code, DipContext context) const;
 
     /**
      * Returns the code for a property value in the language format.
@@ -291,6 +319,7 @@ private:
     wxString m_npred;
     // Current indentation level in the file
     int m_indent;
+    DipContext m_dipContext;
 };
 
 

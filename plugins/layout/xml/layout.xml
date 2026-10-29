@@ -28,7 +28,7 @@ Written by
   </objectinfo>
 
   <objectinfo class="sizeritembase" smallIcon="sizer.xpm" type="interface">
-    <property name="border" type="uint" help="Determines the border width, if the flag parameter is set to include any border flag.">5</property>
+    <property name="border" type="dimension" help="Determines the border width, if the flag parameter is set to include any border flag.">5</property>
     <property name="flag" type="bitlist">
       <option name="wxALL" help="Enable all borders"/>
       <option name="wxLEFT" help="Enable the left border"/>
@@ -108,13 +108,13 @@ Written by
     <property name="name" type="text">gSizer</property>
     <property name="rows" type="uint" help="Number of Rows. '0' tells wxWidgets to calculate the number of rows required to hold the supplied items. If you choose to fix the row number, set the 'cols' figure to zero instead.">0</property>
     <property name="cols" type="uint" help="Number of Columns">2</property>
-    <property name="vgap" type="uint" help="The vertical gap (in pixels) between the cells in the sizer.">0</property>
-    <property name="hgap" type="uint" help="The horizontal gap (in pixels) between cells in the sizer.">0</property>
+    <property name="vgap" type="dimension" help="The vertical gap (in pixels) between the cells in the sizer.">0</property>
+    <property name="hgap" type="dimension" help="The horizontal gap (in pixels) between cells in the sizer.">0</property>
   </objectinfo>
 
   <objectinfo class="flexgridsizerbase" icon="flex_grid_sizer.xpm" type="interface">
-    <property name="vgap" type="uint" help="The vertical gap (in pixels) between the cells in the sizer.">0</property>
-    <property name="hgap" type="uint" help="The horizontal gap (in pixels) between cells in the sizer.">0</property>
+    <property name="vgap" type="dimension" help="The vertical gap (in pixels) between the cells in the sizer.">0</property>
+    <property name="hgap" type="dimension" help="The horizontal gap (in pixels) between cells in the sizer.">0</property>
     <property name="growablerows" type="uintpairlist" help="Comma separated list of row indices (starting from zero, optional proportion appended after a colon) that should be grown if there is extra space available to the sizer."/>
     <property name="growablecols" type="uintpairlist" help="Comma separated list of column indices (starting from zero, optional proportion appended after a colon) that should be grown if there is extra space available to the sizer."/>
     <property name="flexible_direction" type="option" help="Since wxWidgets 2.5.0, wxFlexGridSizer can size items equally in one direction but unequally ('flexibly') in the other">
@@ -168,8 +168,8 @@ Written by
   </objectinfo>
 
   <objectinfo class="spacer" icon="spacer.xpm" type="widget">
-    <property name="width" type="uint" help="The width of the spacer">0</property>
-    <property name="height" type="uint" help="The height of the spacer">0</property>
+    <property name="width" type="dimension" help="The width of the spacer">0</property>
+    <property name="height" type="dimension" help="The height of the spacer">0</property>
   </objectinfo>
 
 </package>

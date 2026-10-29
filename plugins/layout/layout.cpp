@@ -107,9 +107,9 @@ public:
         // Add the spacer
         if (_("spacer") == childObj->GetClassName()) {
             sizer->Add(
-              childObj->GetPropertyAsInteger(_("width")), childObj->GetPropertyAsInteger(_("height")),
+              childObj->GetPropertyAsPixels(_("width"), nullptr), childObj->GetPropertyAsPixels(_("height"), nullptr),
               obj->GetPropertyAsInteger(_("proportion")), obj->GetPropertyAsInteger(_("flag")),
-              obj->GetPropertyAsInteger(_("border")));
+              obj->GetPropertyAsPixels(_("border"), nullptr));
             return;
         }
 
@@ -120,11 +120,11 @@ public:
         if (windowChild != NULL) {
             sizer->Add(
               windowChild, obj->GetPropertyAsInteger(_("proportion")), obj->GetPropertyAsInteger(_("flag")),
-              obj->GetPropertyAsInteger(_("border")));
+              obj->GetPropertyAsPixels(_("border"), nullptr));
         } else if (sizerChild != NULL) {
             sizer->Add(
               sizerChild, obj->GetPropertyAsInteger(_("proportion")), obj->GetPropertyAsInteger(_("flag")),
-              obj->GetPropertyAsInteger(_("border")));
+              obj->GetPropertyAsPixels(_("border"), nullptr));
         } else {
             wxLogError(
               wxT("The SizerItem component's child is not a wxWindow or a wxSizer or a spacer - this should not be "
@@ -164,7 +164,7 @@ public:
     wxObject* Create(IObject* obj, wxObject* /*parent*/) override
     {
         wxBoxSizer* sizer = new wxBoxSizer(obj->GetPropertyAsInteger(_("orient")));
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
         return sizer;
     }
 
@@ -194,7 +194,7 @@ public:
     {
         const auto sizer =
           new wxWrapSizer(obj->GetPropertyAsInteger(_("orient")), obj->GetPropertyAsInteger(_("flags")));
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
         return sizer;
     }
 
@@ -225,7 +225,7 @@ public:
     wxObject* Create(IObject* obj, wxObject* parent) override
     {
         auto* sizer = new wxStaticBoxSizer(obj->GetPropertyAsInteger(_("orient")), (wxWindow*)parent, obj->GetPropertyAsString(_("label")));
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
 
         return sizer;
     }
@@ -258,9 +258,9 @@ public:
     {
         wxGridSizer* sizer = new wxGridSizer(
           obj->GetPropertyAsInteger(_("rows")), obj->GetPropertyAsInteger(_("cols")),
-          obj->GetPropertyAsInteger(_("vgap")), obj->GetPropertyAsInteger(_("hgap")));
+          obj->GetPropertyAsPixels(_("vgap"), nullptr), obj->GetPropertyAsPixels(_("hgap"), nullptr));
 
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
 
         return sizer;
     }
@@ -301,7 +301,7 @@ public:
         for (const auto& row : obj->GetPropertyAsVectorIntPair(_("growablerows"))) {
             sizer->AddGrowableRow(row.first, row.second);
         }
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
         sizer->SetFlexibleDirection(obj->GetPropertyAsInteger(_("flexible_direction")));
         sizer->SetNonFlexibleGrowMode((wxFlexSizerGrowMode)obj->GetPropertyAsInteger(_("non_flexible_grow_mode")));
     }
@@ -338,7 +338,7 @@ public:
     {
         wxFlexGridSizer* sizer = new wxFlexGridSizer(
           obj->GetPropertyAsInteger(_("rows")), obj->GetPropertyAsInteger(_("cols")),
-          obj->GetPropertyAsInteger(_("vgap")), obj->GetPropertyAsInteger(_("hgap")));
+          obj->GetPropertyAsPixels(_("vgap"), nullptr), obj->GetPropertyAsPixels(_("hgap"), nullptr));
 
         AddProperties(obj, sizer);
 
@@ -378,8 +378,9 @@ private:
 
         if (_("spacer") == childObj->GetClassName()) {
             return new wxGBSizerItem(
-              childObj->GetPropertyAsInteger(_("width")), childObj->GetPropertyAsInteger(_("height")), position, span,
-              sizeritem->GetPropertyAsInteger(_("flag")), sizeritem->GetPropertyAsInteger(_("border")), NULL);
+              childObj->GetPropertyAsPixels(_("width"), nullptr), childObj->GetPropertyAsPixels(_("height"), nullptr),
+              position, span, sizeritem->GetPropertyAsInteger(_("flag")),
+              sizeritem->GetPropertyAsPixels(_("border"), nullptr), NULL);
         }
 
         // Add the child ( window or sizer ) to the sizer
@@ -389,11 +390,11 @@ private:
         if (windowChild != NULL) {
             return new wxGBSizerItem(
               windowChild, position, span, sizeritem->GetPropertyAsInteger(_("flag")),
-              sizeritem->GetPropertyAsInteger(_("border")), NULL);
+              sizeritem->GetPropertyAsPixels(_("border"), nullptr), NULL);
         } else if (sizerChild != NULL) {
             return new wxGBSizerItem(
               sizerChild, position, span, sizeritem->GetPropertyAsInteger(_("flag")),
-              sizeritem->GetPropertyAsInteger(_("border")), NULL);
+              sizeritem->GetPropertyAsPixels(_("border"), nullptr), NULL);
         } else {
             wxLogError(
               wxT("The GBSizerItem component's child is not a wxWindow or a wxSizer or a Spacer - this should not be "
@@ -405,11 +406,11 @@ private:
 public:
     wxObject* Create(IObject* obj, wxObject* /*parent*/) override
     {
-        wxGridBagSizer* sizer =
-          new wxGridBagSizer(obj->GetPropertyAsInteger(_("vgap")), obj->GetPropertyAsInteger(_("hgap")));
+        wxGridBagSizer* sizer = new wxGridBagSizer(
+          obj->GetPropertyAsPixels(_("vgap"), nullptr), obj->GetPropertyAsPixels(_("hgap"), nullptr));
 
         if (!obj->IsPropertyNull(_("empty_cell_size"))) {
-            sizer->SetEmptyCellSize(obj->GetPropertyAsSize(_("empty_cell_size")));
+            sizer->SetEmptyCellSize(obj->GetPropertyAsPixelSize(_("empty_cell_size"), nullptr));
         }
 
         return sizer;
@@ -528,7 +529,7 @@ public:
     {
         wxStdDialogButtonSizer* sizer = new wxStdDialogButtonSizer();
 
-        sizer->SetMinSize(obj->GetPropertyAsSize(_("minimum_size")));
+        sizer->SetMinSize(obj->GetPropertyAsPixelSize(_("minimum_size"), nullptr));
 
         if (obj->GetPropertyAsInteger(_("OK")) != 0) {
             sizer->AddButton(new wxButton((wxWindow*)parent, wxID_OK));
