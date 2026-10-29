@@ -70,6 +70,19 @@ public:
     virtual wxArrayInt GetPropertyAsArrayInt(const wxString& name) const = 0;
     virtual wxArrayString GetPropertyAsArrayString(const wxString& name) const = 0;
     virtual std::vector<std::pair<int, int>> GetPropertyAsVectorIntPair(const wxString& name) const = 0;
+
+    /**
+     * @brief Get the value of a dimension, wxPoint or wxSize property in pixels of a window
+     *
+     * Values in pixels are returned as is, values in DIP get converted by wxWindow::FromDIP().
+     *
+     * @param name Property name
+     * @param window Window to use for the conversion, can be nullptr to use the DPI of the main display
+     * @return Property value in pixels
+     */
+    virtual int GetPropertyAsPixels(const wxString& name, const wxWindow* window) const = 0;
+    virtual wxPoint GetPropertyAsPixelPoint(const wxString& name, const wxWindow* window) const = 0;
+    virtual wxSize GetPropertyAsPixelSize(const wxString& name, const wxWindow* window) const = 0;
 };
 
 

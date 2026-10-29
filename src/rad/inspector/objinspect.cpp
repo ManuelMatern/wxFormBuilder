@@ -298,9 +298,12 @@ wxPGProperty* ObjectInspector::GetProperty(PProperty prop)
         result->SetHelpString(wxGetTranslation(desc));
 
     } else if (type == PT_WXPOINT) {
-        result = new wxFBPointProperty(name, wxPG_LABEL, prop->GetValueAsPoint());
+        result = new wxFBDimensionProperty(name, wxPG_LABEL, prop->GetValueAsString(), {wxT("X"), wxT("Y")});
     } else if (type == PT_WXSIZE) {
-        result = new wxFBSizeProperty(name, wxPG_LABEL, prop->GetValueAsSize());
+        result =
+          new wxFBDimensionProperty(name, wxPG_LABEL, prop->GetValueAsString(), {wxT("Width"), wxT("Height")});
+    } else if (type == PT_DIMENSION) {
+        result = new wxFBDimensionProperty(name, wxPG_LABEL, prop->GetValueAsString(), {wxT("Value")});
     } else if (type == PT_WXFONT) {
         result = new wxFBFontProperty(name, wxPG_LABEL, TypeConv::StringToFont(prop->GetValueAsString()));
     } else if (type == PT_WXCOLOUR) {
@@ -684,14 +687,10 @@ void ObjectInspector::OnPropertyGridChanged(wxPropertyGridEvent& event)
                 ModifyProperty(prop, aux);
                 break;
             }
-            case PT_WXPOINT: {
-                wxPoint point = wxPointRefFromVariant(event.GetPropertyValue());
-                ModifyProperty(prop, wxString::Format(wxT("%i,%i"), point.x, point.y));
-                break;
-            }
-            case PT_WXSIZE: {
-                wxSize size = wxSizeRefFromVariant(event.GetPropertyValue());
-                ModifyProperty(prop, wxString::Format(wxT("%i,%i"), size.GetWidth(), size.GetHeight()));
+            case PT_WXPOINT:
+            case PT_WXSIZE:
+            case PT_DIMENSION: {
+                ModifyProperty(prop, event.GetPropertyValue().GetString());
                 break;
             }
             case PT_WXFONT: {
@@ -881,18 +880,11 @@ void ObjectInspector::OnPropertyModified(wxFBPropertyEvent& event)
                 aux = wxT("");
             pgProp->SetValueFromString(aux, 0);
         } break;
-        case PT_WXPOINT: {
-            // m_pg->SetPropertyValue( pgProp, prop->GetValue() );
-            wxString aux = prop->GetValueAsString();
-            aux.Replace(wxT(","), wxT(";"));
-            pgProp->SetValueFromString(aux, 0);
-        } break;
-        case PT_WXSIZE: {
-            // m_pg->SetPropertyValue( pgProp, prop->GetValue() );
-            wxString aux = prop->GetValueAsString();
-            aux.Replace(wxT(","), wxT(";"));
-            pgProp->SetValueFromString(aux, 0);
-        } break;
+        case PT_WXPOINT:
+        case PT_WXSIZE:
+        case PT_DIMENSION:
+            pgProp->SetValue(WXVARIANT(prop->GetValueAsString()));
+            break;
         case PT_WXFONT:
             pgProp->SetValue(WXVARIANT(prop->GetValueAsString()));
             break;
