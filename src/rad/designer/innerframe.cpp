@@ -139,7 +139,8 @@ void wxInnerFrame::TitleBar::DrawTitleBar(wxDC& dc)
     // wxSize clientSize(500,100);
 
     tbPosX = tbPosY = 0;
-    tbHeight = m_close.GetHeight() + margin * 2;
+    // fill the whole title bar, the scaled buttons may not match its height exactly
+    tbHeight = clientSize.GetHeight();
     tbWidth = clientSize.GetWidth();
 
     /*wbHeight = m_close.GetHeight();*/
