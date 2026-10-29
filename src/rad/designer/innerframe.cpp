@@ -26,6 +26,7 @@
 #include "innerframe.h"
 
 #include <wx/dcbuffer.h>
+#include <wx/renderer.h>
 
 #include "rad/designer/window_buttons.h"
 
@@ -219,20 +220,22 @@ void wxInnerFrame::TitleBar::DrawTitleBar(wxDC& dc)
         return;
     }
 
-    dc.DrawBitmap(hasClose ? m_close : m_closeDisabled, wbPosX, wbPosY, true);
+    // draw the native buttons, the bitmaps only define their size
+    const auto drawButton = [&](const wxBitmap& bitmap, wxTitleBarButton button, bool enabled) {
+        wxRendererNative::Get().DrawTitleBarBitmap(
+          this, dc, wxRect(wxPoint(wbPosX, wbPosY), bitmap.GetSize()), button, enabled ? wxCONTROL_NONE : wxCONTROL_DISABLED);
+    };
+
+    drawButton(m_close, wxTITLEBAR_BUTTON_CLOSE, hasClose);
     wbPosX -= m_close.GetWidth();
 
-    if (hasMaximize) {
-        dc.DrawBitmap(m_maximize, wbPosX, wbPosY, true);
-    } else if (hasMinimize) {
-        dc.DrawBitmap(m_maximizeDisabled, wbPosX, wbPosY, true);
+    if (hasMaximize || hasMinimize) {
+        drawButton(m_maximize, wxTITLEBAR_BUTTON_MAXIMIZE, hasMaximize);
     }
     wbPosX -= m_maximize.GetWidth();
 
-    if (hasMinimize) {
-        dc.DrawBitmap(m_minimize, wbPosX, wbPosY, true);
-    } else if (hasMaximize) {
-        dc.DrawBitmap(m_minimizeDisabled, wbPosX, wbPosY, true);
+    if (hasMinimize || hasMaximize) {
+        drawButton(m_minimize, wxTITLEBAR_BUTTON_ICONIZE, hasMinimize);
     }
 #else  // GTK
     if (hasClose) {
