@@ -134,9 +134,19 @@ Python code generation written by
         @{ self.m_mgr.SetFlags($aui_manager_style) #nl @}
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl self.m_mgr.Update() @}
+      #ifnotnull $min_client_size
+      @{ #nl self.SetMinClientSize( $min_client_size ) @}
+
+      #ifnotnull $max_client_size
+      @{ #nl self.SetMaxClientSize( $max_client_size ) @}
+
+      #ifnotnull $client_size
+      @{ #nl self.SetClientSize( $client_size ) @}
+
       #ifnotnull $center
       @{ #nl self.Centre( $center ) @}
     </template>
@@ -447,9 +457,19 @@ Python code generation written by
         @{ self.m_mgr.SetFlags($aui_manager_style) #nl @}
       @}
     </template>
+    <!-- The client size is set after the sizer fitted the window and before centering, so centering uses the final size -->
     <template name="after_addchild">
       #ifequal $aui_managed "1"
       @{ #nl self.m_mgr.Update() @}
+      #ifnotnull $min_client_size
+      @{ #nl self.SetMinClientSize( $min_client_size ) @}
+
+      #ifnotnull $max_client_size
+      @{ #nl self.SetMaxClientSize( $max_client_size ) @}
+
+      #ifnotnull $client_size
+      @{ #nl self.SetClientSize( $client_size ) @}
+
       #ifnotnull $center
       @{ #nl self.Centre( $center ) @}
     </template>
