@@ -45,6 +45,7 @@ public:
     };
 
     static wxBitmap GetBitmap(const wxString& iconname, Size size = Size::Default);
+    static wxBitmap ScaleImage(const wxImage& image, Size size);
     static void LoadBitmaps(const wxString& filepath, const wxString& iconpath);
 
     static int GetPixelSize(Size size);
