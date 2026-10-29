@@ -123,6 +123,8 @@ Written by
       @#include &lt;wx/frame.h&gt; #nl
       #ifequal $aui_managed "1"
       @{ @#include &lt;wx/aui/aui.h&gt; @}
+      #ifnotnull $icon
+      @{ #nl @#include &lt;wx/bitmap.h&gt; #nl @#include &lt;wx/image.h&gt; #nl @#include &lt;wx/icon.h&gt; @}
     </template>
     <template name="settings">
       #ifequal $two_step_creation "1"
@@ -135,6 +137,18 @@ Written by
       @}
 
       this->SetSizeHints( $minimum_size, $maximum_size ); #nl
+
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From Icon Resource"
+        @{ this->SetIcon( $icon ); #nl @}
+        #ifequal $icon/source "Load From Resource"
+        @{ this->SetIcon( wxICON( $icon/path ) ); #nl @}
+        #ifequal $icon/source "Load From SVG Resource"
+        @{ this->SetIcon( $icon.GetIcon( wxDefaultSize ) ); #nl @}
+        #ifequal $icon/source "Load From File||Load From Embedded File||Load From XRC||Load From Art Provider"
+        @{ { #indent #nl wxIcon icon; #nl icon.CopyFromBitmap( $icon ); #nl this->SetIcon( icon ); #unindent #nl } #nl @}
+      @}
 
       #ifnotnull $window_extra_style
       @{ this->SetExtraStyle( $window_extra_style ); #nl @}
@@ -521,6 +535,8 @@ Written by
       @#include &lt;wx/dialog.h&gt; #nl
       #ifequal $aui_managed "1"
       @{ @#include &lt;wx/aui/aui.h&gt; @}
+      #ifnotnull $icon
+      @{ #nl @#include &lt;wx/bitmap.h&gt; #nl @#include &lt;wx/image.h&gt; #nl @#include &lt;wx/icon.h&gt; @}
     </template>
     <template name="settings">
       #ifequal $two_step_creation "1"
@@ -533,6 +549,18 @@ Written by
       @}
 
       this->SetSizeHints( $minimum_size, $maximum_size ); #nl
+
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From Icon Resource"
+        @{ this->SetIcon( $icon ); #nl @}
+        #ifequal $icon/source "Load From Resource"
+        @{ this->SetIcon( wxICON( $icon/path ) ); #nl @}
+        #ifequal $icon/source "Load From SVG Resource"
+        @{ this->SetIcon( $icon.GetIcon( wxDefaultSize ) ); #nl @}
+        #ifequal $icon/source "Load From File||Load From Embedded File||Load From XRC||Load From Art Provider"
+        @{ { #indent #nl wxIcon icon; #nl icon.CopyFromBitmap( $icon ); #nl this->SetIcon( icon ); #unindent #nl } #nl @}
+      @}
 
       #ifnotnull $window_extra_style
       @{ this->SetExtraStyle( this->GetExtraStyle() | $window_extra_style ); #nl @}

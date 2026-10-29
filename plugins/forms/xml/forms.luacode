@@ -99,6 +99,17 @@ Lua code generation written by
     <template name="settings">
       #utbl$name:SetSizeHints( $minimum_size, $maximum_size ) #nl
 
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From Resource || Load From Icon Resource"
+        @{ #utbl$name:SetIcon( wx.wxIcon( "$icon/path", wx.wxBITMAP_TYPE_ICO_RESOURCE ) ) #nl @}
+        #ifnotequal $icon/source "Load From Icon Resource"
+        @{
+          #ifnotequal $icon/source "Load From Resource"
+          @{ do local icon = wx.wxIcon() icon:CopyFromBitmap( $icon ) #utbl$name:SetIcon( icon ) end #nl @}
+        @}
+      @}
+
       #ifnotnull $window_extra_style
       @{ #utbl$name :SetExtraStyle( $window_extra_style ) #nl @}
 
@@ -407,6 +418,17 @@ Lua code generation written by
       <!--@{import wxaui @ --></template>
     <template name="settings">
       #utbl$name:SetSizeHints( $minimum_size, $maximum_size ) #nl
+
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From Resource || Load From Icon Resource"
+        @{ #utbl$name:SetIcon( wx.wxIcon( "$icon/path", wx.wxBITMAP_TYPE_ICO_RESOURCE ) ) #nl @}
+        #ifnotequal $icon/source "Load From Icon Resource"
+        @{
+          #ifnotequal $icon/source "Load From Resource"
+          @{ do local icon = wx.wxIcon() icon:CopyFromBitmap( $icon ) #utbl$name:SetIcon( icon ) end #nl @}
+        @}
+      @}
 
       #ifnotnull $window_extra_style
       @{ #utbl$name :SetExtraStyle( #utbl$name :GetExtraStyle() + $window_extra_style ) #nl @}
