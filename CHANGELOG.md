@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Add property `icon` to Frame and Dialog, it supports the sources of the bitmap property, resources are loaded by
+  `wxICON()` in C++ and are not supported by Python, XRC exports and imports it as `<icon>` without resource sources
+  ([#503](https://github.com/wxFormBuilder/wxFormBuilder/issues/503))
+
 ### Changed
 
 - Replaced the CMake option `WXFB_TINYXML2_SHARED` with `WXFB_TINYXML2_PROVIDER`, which accepts `static`, `shared` or `system` to use the bundled TinyXML-2 submodule or an installed system library

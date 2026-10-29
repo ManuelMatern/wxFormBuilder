@@ -967,8 +967,9 @@ void ObjectDatabase::ParseProperties(
           propertyName, propertyType, propertyDefaultValue, propertyDesc, propertyCustomEditor, optionList, childList);
         objectInfo->AddPropertyInfo(propertyInfo);
 
-        // Merge property code templates, once per property type
-        if (types.emplace(propertyType).second) {
+        // Merge property code templates, once per property type. A property can disable this, if the object
+        // templates generate the necessary code themselves, e.g. includes only if the property has a value.
+        if (property->BoolAttribute("type_templates", true) && types.emplace(propertyType).second) {
             if (auto propertyLanguageMap = m_propertyTypeTemplates.find(propertyType);
                 propertyLanguageMap != m_propertyTypeTemplates.end()) {
                 for (const auto& [language, codeInfo] : propertyLanguageMap->second) {
