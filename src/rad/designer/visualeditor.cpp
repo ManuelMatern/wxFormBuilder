@@ -771,7 +771,14 @@ void VisualEditor::SetupWindow(PObjectBase obj, wxWindow* window)
     // Size
     wxSize size = obj->GetPropertyAsPixelSize(wxT("size"), window);
     if (size != wxDefaultSize) {
-        window->SetSize(size);
+        PProperty psize = obj->GetProperty(wxT("size"));
+        if (psize && psize->IsDip()) {
+            // The plugins pass the unconverted value to the constructor of the window, which sets it as
+            // minimum size for the sizers, set the converted value the same way as the constructor does
+            window->SetInitialSize(size);
+        } else {
+            window->SetSize(size);
+        }
     }
 
     // Minimum size
