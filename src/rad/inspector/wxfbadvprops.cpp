@@ -29,6 +29,8 @@
 
 #include "wxfbadvprops.h"
 
+#include <algorithm>
+
 #include <wx/regex.h>
 
 #include "rad/appdata.h"
@@ -268,6 +270,7 @@ public:
     void OnSetValue() override
     {
         wxImageFileProperty::OnSetValue();
+        m_preview = wxNullBitmap;
         if (m_image.IsOk()) {
             return;
         }
@@ -279,6 +282,26 @@ public:
             SetImage(wxImage(filename.GetFullPath()));
         }
     }
+
+    // the preview area has a fixed width but the height of the row, keep the aspect ratio of the image
+    void OnCustomPaint(wxDC& dc, const wxRect& rect, wxPGPaintData& paintData) override
+    {
+        if (!m_image.IsOk()) {
+            wxImageFileProperty::OnCustomPaint(dc, rect, paintData);
+            return;
+        }
+
+        const auto scale = std::min(
+          static_cast<double>(rect.width) / m_image.GetWidth(), static_cast<double>(rect.height) / m_image.GetHeight());
+        const wxSize size(std::max(1, wxRound(m_image.GetWidth() * scale)), std::max(1, wxRound(m_image.GetHeight() * scale)));
+        if (!m_preview.IsOk() || m_preview.GetSize() != size) {
+            m_preview = wxBitmap(m_image.Scale(size.x, size.y, wxIMAGE_QUALITY_HIGH));
+        }
+        dc.DrawBitmap(m_preview, rect.x + (rect.width - size.x) / 2, rect.y + (rect.height - size.y) / 2, true);
+    }
+
+private:
+    wxBitmap m_preview;
 };
 }  // namespace
 
