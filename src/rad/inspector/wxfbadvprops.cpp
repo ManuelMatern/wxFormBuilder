@@ -299,10 +299,35 @@ wxPGProperty* wxFBBitmapProperty::CreatePropertySource(int sourceIndex)
     return srcProp;
 }
 
+namespace
+{
+// wxImageFileProperty loads relative paths from the working directory, the paths are relative to the project
+class ProjectImageFileProperty : public wxImageFileProperty
+{
+public:
+    using wxImageFileProperty::wxImageFileProperty;
+
+    void OnSetValue() override
+    {
+        wxImageFileProperty::OnSetValue();
+        if (m_image.IsOk()) {
+            return;
+        }
+
+        auto filename = GetFileName();
+        if (filename.IsOk() && filename.IsRelative() && filename.MakeAbsolute(AppData()->GetProjectPath()) &&
+            filename.FileExists()) {
+            wxLogNull stopLogging;
+            SetImage(wxImage(filename.GetFullPath()));
+        }
+    }
+};
+}  // namespace
+
 wxPGProperty* wxFBBitmapProperty::CreatePropertyFilePath()
 {
     // Add 'file_path' property (common for 'Load From File' and 'Load From Embedded File' choices)
-    wxPGProperty* propFilePath = new wxImageFileProperty(wxT("file_path"), wxPG_LABEL);
+    wxPGProperty* propFilePath = new ProjectImageFileProperty(wxT("file_path"), wxPG_LABEL);
     propFilePath->SetHelpString(_("Path to the image file."));
 
     if (!gs_imageInitialPath.IsEmpty()) {
