@@ -818,9 +818,7 @@ PObjectPackage ObjectDatabase::LoadPackage(const wxString& file, const wxString&
     wxBitmap packageBitmap;
     if (packageIconPath.HasName() && packageIconPath.FileExists()) {
         auto packageImage = wxImage(packageIconPath.GetFullPath(), wxBITMAP_TYPE_ANY);
-        packageBitmap = wxBitmap(packageImage.Scale(
-          AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon_Medium),
-          AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon_Medium)));
+        packageBitmap = AppBitmaps::ScaleImage(packageImage, AppBitmaps::Size::Icon_Medium);
     } else {
         packageBitmap = AppBitmaps::GetBitmap("unknown", AppBitmaps::Size::Icon_Medium);
     }
@@ -850,17 +848,14 @@ PObjectPackage ObjectDatabase::LoadPackage(const wxString& file, const wxString&
         if (auto objectIconPath = wxFileName(iconPath, objectIcon);
             objectIconPath.HasName() && objectIconPath.FileExists()) {
             auto objectImage = wxImage(objectIconPath.GetFullPath(), wxBITMAP_TYPE_ANY);
-            objectInfo->SetIconFile(wxBitmap(objectImage.Scale(
-              AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon), AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon))));
+            objectInfo->SetIconFile(AppBitmaps::ScaleImage(objectImage, AppBitmaps::Size::Icon));
         } else {
             objectInfo->SetIconFile(AppBitmaps::GetBitmap("unknown", AppBitmaps::Size::Icon));
         }
         if (auto objectIconSmallPath = wxFileName(iconPath, objectIconSmall);
             objectIconSmallPath.HasName() && objectIconSmallPath.FileExists()) {
             auto objectImageSmall = wxImage(objectIconSmallPath.GetFullPath(), wxBITMAP_TYPE_ANY);
-            objectInfo->SetSmallIconFile(wxBitmap(objectImageSmall.Scale(
-              AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon_Small),
-              AppBitmaps::GetPixelSize(AppBitmaps::Size::Icon_Small))));
+            objectInfo->SetSmallIconFile(AppBitmaps::ScaleImage(objectImageSmall, AppBitmaps::Size::Icon_Small));
         } else {
             objectInfo->SetSmallIconFile(AppBitmaps::GetBitmap("unknown", AppBitmaps::Size::Icon_Small));
         }
