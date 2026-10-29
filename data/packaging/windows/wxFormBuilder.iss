@@ -128,10 +128,10 @@ Source: {#RootInstallDir}\resources\*; DestDir: {app}\resources; Flags: recurses
   #expr FindClose(FindHandle)
 #endif
 
-Source: {#RootInstallDir}\wx*.dll; DestDir: {app}; Components: main
+Source: {#RootInstallDir}\wx*.dll; DestDir: {app}; Flags: ignoreversion; Components: main
 
-Source: {#RootInstallDir}\lib*.dll; DestDir: {app}; Components: runtime
-Source: {#RootInstallDir}\zlib1.dll; DestDir: {app}; Components: runtime
+Source: {#RootInstallDir}\lib*.dll; DestDir: {app}; Flags: ignoreversion; Components: runtime
+Source: {#RootInstallDir}\zlib1.dll; DestDir: {app}; Flags: ignoreversion; Components: runtime
 
 
 [Icons]
