@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Add properties `client_size`, `min_client_size` and `max_client_size` to Frame and Dialog, they are applied after the
   sizer fitted the window and before the window gets centered, the minimum and maximum client size override the
   properties `minimum_size` and `maximum_size`
+- Add property `icon` to Frame and Dialog, it supports the sources of the bitmap property, resources are loaded by
+  `wxICON()` in C++ and are not supported by Python, XRC exports and imports it as `<icon>` without resource sources
+  ([#503](https://github.com/wxFormBuilder/wxFormBuilder/issues/503))
 
 ## [4.2.1] - 2024-05-29
 

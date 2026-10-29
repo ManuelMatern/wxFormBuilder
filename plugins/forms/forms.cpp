@@ -84,6 +84,23 @@ static void ExportClientSizeToXrc(ObjectToXrcFilter& filter, tinyxml2::XMLElemen
     filter.AddProperty(XrcFilter::Type::Size, "client_size", "size");
 }
 
+/**
+ * Export the icon of a wxFrame or wxDialog.
+ *
+ * XRC can't load resources, icons from resources are not exported.
+ */
+static void ExportIconToXrc(ObjectToXrcFilter& filter, const IObject* obj)
+{
+    if (obj->IsPropertyNull("icon")) {
+        return;
+    }
+    const auto source = obj->GetPropertyAsString("icon").BeforeFirst(';').Trim();
+    if (source == "Load From Resource" || source == "Load From Icon Resource" || source == "Load From SVG Resource") {
+        return;
+    }
+    filter.AddProperty(XrcFilter::Type::Bitmap, "icon");
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // TO-DO: The "Form" type component should be drawn in the designer, so that,
@@ -104,6 +121,7 @@ public:
         filter.AddWindowProperties();
         ExportClientSizeToXrc(filter, xrc, obj);
         filter.AddProperty(XrcFilter::Type::Text, "title");
+        ExportIconToXrc(filter, obj);
         if (!obj->IsPropertyNull("center")) {
             filter.AddPropertyValue("centered", "1");
         }
@@ -117,6 +135,7 @@ public:
         XrcToXfbFilter filter(xfb, GetLibrary(), xrc, "Frame");
         filter.AddWindowProperties();
         filter.AddProperty(XrcFilter::Type::Text, "title");
+        filter.AddProperty(XrcFilter::Type::Bitmap, "icon");
         // FIXME: This is wrong, while XFB does in fact use a bitlist, XRC contains a bool only
         filter.AddProperty(XrcFilter::Type::BitList, "centered", "center");
         // FIXME: This property doesn't exist in XRC
@@ -164,6 +183,7 @@ public:
         filter.AddWindowProperties();
         ExportClientSizeToXrc(filter, xrc, obj);
         filter.AddProperty(XrcFilter::Type::Text, "title");
+        ExportIconToXrc(filter, obj);
         // FIXME: XFB uses a bitlist and allows to center both directions independent, XRC offers only a bool
         if (!obj->IsPropertyNull("center")) {
             filter.AddPropertyValue("centered", "1");
@@ -176,6 +196,7 @@ public:
         XrcToXfbFilter filter(xfb, GetLibrary(), xrc, "Dialog");
         filter.AddWindowProperties();
         filter.AddProperty(XrcFilter::Type::Text, "title");
+        filter.AddProperty(XrcFilter::Type::Bitmap, "icon");
         // FIXME: This is wrong, while XFB does in fact use a bitlist, XRC contains a bool only
         filter.AddProperty(XrcFilter::Type::BitList, "centered", "center");
         return xfb;
