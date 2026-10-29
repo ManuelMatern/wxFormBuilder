@@ -38,7 +38,7 @@ DialogFindComponent::DialogFindComponent(
   wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) :
   wxDialog(parent, id, title, pos, size, style)
 {
-    this->SetSizeHints(wxSize(250, 400), wxDefaultSize);
+    this->SetSizeHints(FromDIP(wxSize(250, 400)), wxDefaultSize);
 
     wxBoxSizer* bSizerMain = new wxBoxSizer(wxVERTICAL);
 
