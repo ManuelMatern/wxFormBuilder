@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Replaced the CMake option `WXFB_TINYXML2_SHARED` with `WXFB_TINYXML2_PROVIDER`, which accepts `static`, `shared` or `system` to use the bundled TinyXML-2 submodule or an installed system library
+- Draw the title bar buttons of the designer preview with the native theme on Windows
 
 ### Fixed
 
