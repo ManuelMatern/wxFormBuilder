@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   [#832](https://github.com/wxFormBuilder/wxFormBuilder/issues/832))
 - Draw the title bar buttons of the designer preview with the native theme on Windows
 
+### Fixed
+
+- Fix the image preview of bitmap properties for paths relative to the project and keep its aspect ratio
+
 ## [4.2.1] - 2024-05-29
 
 ### Fixed
