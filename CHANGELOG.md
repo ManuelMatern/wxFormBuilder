@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Always replace the DLLs when installing on Windows, an older installed DLL could prevent the start
+
 ## [4.2.1] - 2024-05-29
 
 ### Fixed
