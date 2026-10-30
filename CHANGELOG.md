@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Fix the macOS app bundle creation to work in current environments, the required libraries are now stored in `Contents/Frameworks`
+- Keep the width of the properties panel if it is swapped left of the designer and the main window gets resized
 
 ## [4.2.1] - 2024-05-29
 
