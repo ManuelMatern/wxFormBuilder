@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Replaced the CMake option `WXFB_TINYXML2_SHARED` with `WXFB_TINYXML2_PROVIDER`, which accepts `static`, `shared` or `system` to use the bundled TinyXML-2 submodule or an installed system library
+- Make wxFormBuilder per monitor DPI aware on Windows, icons, fixed window sizes and the designer title bar are
+  scaled with the DPI ([#295](https://github.com/wxFormBuilder/wxFormBuilder/issues/295),
+  [#832](https://github.com/wxFormBuilder/wxFormBuilder/issues/832))
 
 ### Fixed
 
