@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Fix the image preview of bitmap properties for paths relative to the project and keep its aspect ratio
 - Keep the width of the properties panel if it is swapped left of the designer and the main window gets resized
+- Always replace the DLLs when installing on Windows, an older installed DLL could prevent the start
 
 ## [4.2.1] - 2024-05-29
 
