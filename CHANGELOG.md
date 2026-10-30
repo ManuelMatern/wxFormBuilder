@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep the width of the properties panel if it is swapped left of the designer and the main window gets resized
+
 ## [4.2.1] - 2024-05-29
 
 ### Fixed
