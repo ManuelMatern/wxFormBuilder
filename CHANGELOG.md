@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Make wxFormBuilder per monitor DPI aware on Windows, icons, fixed window sizes and the designer title bar are
   scaled with the DPI ([#295](https://github.com/wxFormBuilder/wxFormBuilder/issues/295),
   [#832](https://github.com/wxFormBuilder/wxFormBuilder/issues/832))
+- Draw the title bar buttons of the designer preview with the native theme on Windows
 
 ## [4.2.1] - 2024-05-29
 
