@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Fix the macOS app bundle creation to work in current environments, the required libraries are now stored in `Contents/Frameworks`
+- Fix the image preview of bitmap properties for paths relative to the project and keep its aspect ratio
 
 ## [4.2.1] - 2024-05-29
 
