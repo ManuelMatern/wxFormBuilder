@@ -25,8 +25,11 @@
 
 #include "bitmaps.h"
 
+#include <algorithm>
+
 #include <wx/intl.h>
 #include <wx/log.h>
+#include <wx/window.h>
 
 #include <plugin_interface/default.xpm>
 #include <common/xmlutils.h>
@@ -43,11 +46,8 @@ wxBitmap AppBitmaps::GetBitmap(const wxString& iconname, Size size)
     } else {
         bmp = m_bitmaps["unknown"];
     }
-    if (
-      size != Size::Default &&
-      (bmp.GetWidth() != static_cast<int>(size) || bmp.GetHeight() != static_cast<int>(size))) {
-        auto image = bmp.ConvertToImage();
-        bmp = wxBitmap(image.Scale(static_cast<int>(size), static_cast<int>(size)));
+    if (size != Size::Default && (bmp.GetWidth() != GetPixelSize(size) || bmp.GetHeight() != GetPixelSize(size))) {
+        bmp = ScaleImage(bmp.ConvertToImage(), size);
     }
 
     return bmp;
@@ -92,7 +92,55 @@ void AppBitmaps::LoadBitmaps(const wxString& filepath, const wxString& iconpath)
 }
 
 
+namespace
+{
+// multiplies the colours with the alpha, or divides them by it
+void PremultiplyAlpha(wxImage& image, bool undo)
+{
+    auto* rgb = image.GetData();
+    const auto* alpha = image.GetAlpha();
+    for (int i = 0, count = image.GetWidth() * image.GetHeight(); i < count; ++i, rgb += 3) {
+        for (int c = 0; c < 3; ++c) {
+            if (undo) {
+                rgb[c] = alpha[i] == 0 ? 0 : std::min(255, rgb[c] * 255 / alpha[i]);
+            } else {
+                rgb[c] = rgb[c] * alpha[i] / 255;
+            }
+        }
+    }
+}
+}  // namespace
+
+
+wxBitmap AppBitmaps::ScaleImage(const wxImage& image, Size size)
+{
+    // the scale factor keeps the size in DIPs, otherwise wxBitmapBundle scales the bitmap again
+    const auto pixelSize = GetPixelSize(size);
+    const auto scale = static_cast<double>(pixelSize) / static_cast<int>(size);
+    if (image.GetWidth() == pixelSize && image.GetHeight() == pixelSize) {
+        return wxBitmap(image, wxBITMAP_SCREEN_DEPTH, scale);
+    }
+
+    // resampling blends the colour of transparent pixels into the edges, a mask colour would show up as dark border,
+    // so convert the mask to alpha and resample with premultiplied alpha
+    auto scaled = image.Copy();
+    if (scaled.HasMask()) {
+        scaled.InitAlpha();
+    }
+    const auto hasAlpha = scaled.HasAlpha();
+    if (hasAlpha) {
+        PremultiplyAlpha(scaled, false);
+    }
+    scaled.Rescale(pixelSize, pixelSize, wxIMAGE_QUALITY_HIGH);
+    if (hasAlpha) {
+        PremultiplyAlpha(scaled, true);
+    }
+    return wxBitmap(scaled, wxBITMAP_SCREEN_DEPTH, scale);
+}
+
+
 int AppBitmaps::GetPixelSize(Size size)
 {
-    return static_cast<int>(size);
+    // the sizes are in DIPs, scale them with the DPI of the main display
+    return wxWindow::FromDIP(static_cast<int>(size), nullptr);
 }

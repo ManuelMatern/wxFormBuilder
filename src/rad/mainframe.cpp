@@ -268,12 +268,12 @@ MainFrame::MainFrame(wxWindow* parent, int id, int style, wxPoint pos, wxSize si
                  wxPaneInfo().Name(wxT("tree")).
                               Caption(wxT("Object Tree")).
                                Left().Layer(1).
-                               BestSize(wxSize(300,400)).
+                               BestSize(FromDIP(wxSize(300,400))).
                                CloseButton(false));
     m_mgr.AddPane(objectInspector,
                  wxPaneInfo().Name(wxT("inspector")).
                               Caption(wxT("Object Properties")).
-                               Right().BestSize(wxSize(300,400)).
+                               Right().BestSize(FromDIP(wxSize(300,400))).
                                CloseButton(false));
 
     m_mgr.AddPane(designer,
@@ -1670,7 +1670,7 @@ void MainFrame::CreateWideGui()
 
     m_style = wxFB_WIDE_GUI;
 
-    SetMinSize(wxSize(700, 380));
+    SetMinSize(FromDIP(wxSize(700, 380)));
 }
 
 void MainFrame::CreateClassicGui()
@@ -1704,7 +1704,7 @@ void MainFrame::CreateClassicGui()
     m_rightSplitter->SplitHorizontally(objectTree, objectInspector, m_rightSplitterWidth);
     m_rightSplitter->SetMinimumPaneSize(2);
 
-    SetMinSize(wxSize(700, 465));
+    SetMinSize(FromDIP(wxSize(700, 465)));
 }
 
 void MainFrame::OnIdle(wxIdleEvent&)
