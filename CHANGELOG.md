@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Always replace the DLLs when installing on Windows, an older installed DLL could prevent the start
 - Fix selecting `wxSpinCtrl` and `wxSpinCtrlDouble` in the designer by clicking on their child windows on Windows
 - Fix selecting disabled controls in the designer by clicking on them
+- Ask before switching to another instance if the project to load is already open there, instead of switching silently
 
 ## [4.2.1] - 2024-05-29
 
