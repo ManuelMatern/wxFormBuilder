@@ -51,6 +51,14 @@ public:
     void OnRightClick(wxMouseEvent& event);
     void OnPaint(wxPaintEvent& event);
     void OnSetCursor(wxSetCursorEvent& event);
+
+    /**
+     * Disabled windows don't receive mouse events, these are delivered to their parent instead.
+     * Forward the event to the disabled visual object child below the mouse position, if any.
+     *
+     * @return true if the event was forwarded.
+     */
+    static bool RedirectToDisabledChild(wxWindow* parent, wxMouseEvent& event);
 };
 
 #endif  // RAD_DESIGNER_VISUALOBJ_H

@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Keep the width of the properties panel if it is swapped left of the designer and the main window gets resized
 - Always replace the DLLs when installing on Windows, an older installed DLL could prevent the start
 - Fix selecting `wxSpinCtrl` and `wxSpinCtrlDouble` in the designer by clicking on their child windows on Windows
+- Fix selecting disabled controls in the designer by clicking on them
 
 ## [4.2.1] - 2024-05-29
 

@@ -43,8 +43,64 @@ VObjEvtHandler::VObjEvtHandler(wxWindow* win, PObjectBase obj)
     m_object = obj;
 }
 
+namespace
+{
+bool IsVisualObject(wxWindow* window)
+{
+    // The handler doesn't need to be the topmost one
+    for (auto* handler = window->GetEventHandler(); handler; handler = handler->GetNextHandler()) {
+        if (dynamic_cast<VObjEvtHandler*>(handler)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+wxWindow* FindDisabledVisualObject(wxWindow* parent, const wxPoint& screenPos)
+{
+    for (auto* child : parent->GetChildren()) {
+        if (!child->IsShown() || child->IsTopLevel() || !child->GetScreenRect().Contains(screenPos)) {
+            continue;
+        }
+        if (!child->IsEnabled() && IsVisualObject(child)) {
+            return child;
+        }
+        // Descend into enabled children as well, e.g. wxStaticBox is transparent for mouse clicks on wxMSW,
+        // so clicks on its disabled children are delivered to the window below it
+        if (auto* found = FindDisabledVisualObject(child, screenPos)) {
+            return found;
+        }
+    }
+    return nullptr;
+}
+}  // namespace
+
+bool VObjEvtHandler::RedirectToDisabledChild(wxWindow* parent, wxMouseEvent& event)
+{
+    // Only handle clicks the parent received itself, not the ones that are forwarded from its children
+    if (event.GetEventObject() != parent) {
+        return false;
+    }
+
+    const wxPoint screenPos = parent->ClientToScreen(event.GetPosition());
+    auto* child = FindDisabledVisualObject(parent, screenPos);
+    if (!child) {
+        return false;
+    }
+
+    wxMouseEvent childEvent(event);
+    childEvent.SetPosition(child->ScreenToClient(screenPos));
+    childEvent.SetEventObject(child);
+    child->HandleWindowEvent(childEvent);
+    return true;
+}
+
 void VObjEvtHandler::OnLeftClick(wxMouseEvent& event)
 {
+    if (RedirectToDisabledChild(m_window, event)) {
+        return;
+    }
+
     PObjectBase obj = m_object.lock();
 
     if (obj) {
