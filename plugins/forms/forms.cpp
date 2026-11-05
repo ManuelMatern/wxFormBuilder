@@ -28,6 +28,7 @@
 
 #include <wx/aui/aui.h>
 
+#include <common/xmlutils.h>
 #include <plugin_interface/plugin.h>
 #include <plugin_interface/xrcconv.h>
 #include <plugin_interface/forms/wizard.h>
@@ -66,6 +67,23 @@ wxBEGIN_EVENT_TABLE(ComponentEvtHandler, wxEvtHandler)
 EVT_TOOL(wxID_ANY, ComponentEvtHandler::OnTool)
 wxEND_EVENT_TABLE()
 
+/**
+ * Export the client size of a wxFrame or wxDialog.
+ *
+ * XRC sets the size of these windows as client size, so the property client_size replaces the property size.
+ * XRC has no equivalent for the properties min_client_size and max_client_size, they are not exported.
+ */
+static void ExportClientSizeToXrc(ObjectToXrcFilter& filter, tinyxml2::XMLElement* xrc, const IObject* obj)
+{
+    if (obj->IsPropertyNull("client_size")) {
+        return;
+    }
+    if (auto* size = xrc->FirstChildElement("size")) {
+        xrc->DeleteChild(size);
+    }
+    filter.AddProperty(XrcFilter::Type::Size, "client_size", "size");
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // TO-DO: The "Form" type component should be drawn in the designer, so that,
@@ -84,6 +102,7 @@ public:
     {
         ObjectToXrcFilter filter(xrc, GetLibrary(), obj, "wxFrame");
         filter.AddWindowProperties();
+        ExportClientSizeToXrc(filter, xrc, obj);
         filter.AddProperty(XrcFilter::Type::Text, "title");
         if (!obj->IsPropertyNull("center")) {
             filter.AddPropertyValue("centered", "1");
@@ -143,6 +162,7 @@ public:
     {
         ObjectToXrcFilter filter(xrc, GetLibrary(), obj, "wxDialog");
         filter.AddWindowProperties();
+        ExportClientSizeToXrc(filter, xrc, obj);
         filter.AddProperty(XrcFilter::Type::Text, "title");
         // FIXME: XFB uses a bitlist and allows to center both directions independent, XRC offers only a bool
         if (!obj->IsPropertyNull("center")) {

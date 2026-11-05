@@ -78,6 +78,9 @@ Written by
       <option name="wxFRAME_EX_CONTEXTHELP" help="Under Windows, puts a query button on the caption. When pressed, Windows will go into a context-sensitive help mode and wxWidgets will send a wxEVT_HELP event if the user clicked on an application window. You cannot use this style together with wxMAXIMIZE_BOX or wxMINIMIZE_BOX, so you should use wxDEFAULT_FRAME_STYLE &amp;&amp;~ (wxMINIMIZE_BOX | wxMAXIMIZE_BOX) for the frames having this style (the dialogs don't have a minimize or a maximize box by default). Note: The Project's &quot;help_provider&quot; property must be set for context-sensitive help to work."/>
       <option name="wxFRAME_EX_METAL" help="On Mac OS X, frames with this style will be shown with a metallic look. This is an extra style."/>
     </property>
+    <property name="client_size" type="wxSize" help="Sets the size of the client area by SetClientSize(). It is applied after the children were added and the sizer fitted the window, before the window gets centered. Overrides the property size and the size calculated by the sizer."/>
+    <property name="min_client_size" type="wxSize" help="Sets the minimum size of the client area by SetMinClientSize(). It is applied after the children were added, so menu bar, tool bar and status bar are taken into account. This overrides the minimum size set by the property minimum_size, because both set the minimum size of the window."/>
+    <property name="max_client_size" type="wxSize" help="Sets the maximum size of the client area by SetMaxClientSize(). It is applied after the children were added, so menu bar, tool bar and status bar are taken into account. This overrides the maximum size set by the property maximum_size, because both set the maximum size of the window."/>
     <property name="center" type="option" help="Centers the dialog box on the display in the chosen direction.">
       <option name=""/>
       <option name="wxHORIZONTAL"/>
@@ -162,6 +165,9 @@ Written by
       <option name="wxDIALOG_EX_CONTEXTHELP" help="Under Windows, puts a query button on the caption. When pressed, Windows will go into a context-sensitive help mode and wxWidgets will send a wxEVT_HELP event if the user clicked on an application window. Note: The Project's &quot;help_provider&quot; property must be set for context-sensitive help to work."/>
       <option name="wxDIALOG_EX_METAL" help="On Mac OS X, frames with this style will be shown with a metallic look. This is an extra style."/>
     </property>
+    <property name="client_size" type="wxSize" help="Sets the size of the client area by SetClientSize(). It is applied after the children were added and the sizer fitted the window, before the window gets centered. Overrides the property size and the size calculated by the sizer."/>
+    <property name="min_client_size" type="wxSize" help="Sets the minimum size of the client area by SetMinClientSize(). It is applied after the children were added, so menu bar, tool bar and status bar are taken into account. This overrides the minimum size set by the property minimum_size, because both set the minimum size of the window."/>
+    <property name="max_client_size" type="wxSize" help="Sets the maximum size of the client area by SetMaxClientSize(). It is applied after the children were added, so menu bar, tool bar and status bar are taken into account. This overrides the maximum size set by the property maximum_size, because both set the maximum size of the window."/>
     <property name="center" type="option" help="Centers the dialog box on the display in the chosen direction.">
       <option name=""/>
       <option name="wxHORIZONTAL"/>
