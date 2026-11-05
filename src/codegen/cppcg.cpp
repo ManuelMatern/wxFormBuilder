@@ -124,7 +124,8 @@ wxString CppTemplateParser::ValueToCode(PropertyType type, const wxString& value
         case PT_EDIT_OPTION:
         case PT_FLOAT:
         case PT_INT:
-        case PT_UINT: {
+        case PT_UINT:
+        case PT_DIMENSION: {
             result = value;
             break;
         }
@@ -285,6 +286,17 @@ wxString CppTemplateParser::ValueToCode(PropertyType type, const wxString& value
     }
 
     return result;
+}
+
+wxString CppTemplateParser::DipValueToCode(
+  PropertyType WXUNUSED(type), const wxString& code, DipContext context) const
+{
+    // Without the form window (e.g. default arguments of the constructor) only the DPI of the main display is usable
+    if (context == DipContext::FormWindow) {
+        return wxT("FromDIP( ") + code + wxT(" )");
+    } else {
+        return wxT("wxWindow::FromDIP( ") + code + wxT(", NULL )");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -956,6 +968,10 @@ wxString CppCodeGenerator::GetCode(PObjectBase obj, wxString name)
     _template = code_info->GetTemplate(name);
 
     CppTemplateParser parser(obj, _template, m_i18n, m_useRelativePath, m_basePath);
+    // The constructor declaration contains the default arguments, these get evaluated before the form window exists
+    if (name == wxT("cons_decl")) {
+        parser.SetDipContext(TemplateParser::DipContext::NoFormWindow);
+    }
     wxString code = parser.ParseTemplate();
 
     return code;

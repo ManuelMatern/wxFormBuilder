@@ -196,9 +196,9 @@ public:
             wxTB_NODIVIDER | wxNO_BORDER);
 
         if (!obj->IsPropertyNull(wxT("bitmapsize")))
-            tb->SetToolBitmapSize(obj->GetPropertyAsSize(wxT("bitmapsize")));
+            tb->SetToolBitmapSize(obj->GetPropertyAsPixelSize(wxT("bitmapsize"), nullptr));
         if (!obj->IsPropertyNull(wxT("margins"))) {
-            wxSize margins(obj->GetPropertyAsSize(wxT("margins")));
+            wxSize margins(obj->GetPropertyAsPixelSize(wxT("margins"), nullptr));
             tb->SetMargins(margins.GetWidth(), margins.GetHeight());
         }
         if (!obj->IsPropertyNull(wxT("packing")))

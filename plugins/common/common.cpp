@@ -392,7 +392,7 @@ public:
         }
 
         if (!obj->IsPropertyNull(_("margins"))) {
-            button->SetBitmapMargins(obj->GetPropertyAsSize(_("margins")));
+            button->SetBitmapMargins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
         }
 
         return button;
@@ -491,7 +491,7 @@ public:
         }
 
         if (!obj->IsPropertyNull(_("margins"))) {
-            button->SetBitmapMargins(obj->GetPropertyAsSize(_("margins")));
+            button->SetBitmapMargins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
         }
 
         return button;
@@ -1211,9 +1211,9 @@ public:
             wxTB_NODIVIDER | wxNO_BORDER);
 
         if (!obj->IsPropertyNull(_("bitmapsize")))
-            tb->SetToolBitmapSize(obj->GetPropertyAsSize(_("bitmapsize")));
+            tb->SetToolBitmapSize(obj->GetPropertyAsPixelSize(_("bitmapsize"), nullptr));
         if (!obj->IsPropertyNull(_("margins"))) {
-            wxSize margins(obj->GetPropertyAsSize(_("margins")));
+            wxSize margins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
             tb->SetMargins(margins.GetWidth(), margins.GetHeight());
         }
         if (!obj->IsPropertyNull(_("packing")))
@@ -1299,9 +1299,9 @@ public:
                                                    // wxTB_NODIVIDER | wxNO_BORDER);
 
         if (!obj->IsPropertyNull(_("bitmapsize")))
-            tb->SetToolBitmapSize(obj->GetPropertyAsSize(_("bitmapsize")));
+            tb->SetToolBitmapSize(obj->GetPropertyAsPixelSize(_("bitmapsize"), nullptr));
         if (!obj->IsPropertyNull(_("margins"))) {
-            wxSize margins(obj->GetPropertyAsSize(_("margins")));
+            wxSize margins(obj->GetPropertyAsPixelSize(_("margins"), nullptr));
             tb->SetMargins(margins.GetWidth(), margins.GetHeight());
         }
         if (!obj->IsPropertyNull(_("packing")))

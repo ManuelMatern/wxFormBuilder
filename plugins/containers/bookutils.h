@@ -67,7 +67,7 @@ template <class T>
 void AddImageList(IObject* obj, T* book)
 {
     if (!obj->GetPropertyAsString(_("bitmapsize")).empty()) {
-        wxSize imageSize = obj->GetPropertyAsSize(_("bitmapsize"));
+        wxSize imageSize = obj->GetPropertyAsPixelSize(_("bitmapsize"), nullptr);
         wxImageList* images = new wxImageList(imageSize.GetWidth(), imageSize.GetHeight());
         wxImage image = wxBitmap(default_xpm).ConvertToImage();
         images->Add(image.Scale(imageSize.GetWidth(), imageSize.GetHeight()));
@@ -117,7 +117,7 @@ void OnCreated(wxObject* wxobject, wxWindow* wxparent, IManager* manager, wxStri
 
     if (!parentObj->GetPropertyAsString(_("bitmapsize")).empty()) {
         if (!obj->GetPropertyAsString(_("bitmap")).empty()) {
-            wxSize imageSize = parentObj->GetPropertyAsSize(_("bitmapsize"));
+            wxSize imageSize = parentObj->GetPropertyAsPixelSize(_("bitmapsize"), nullptr);
             int width = imageSize.GetWidth();
             int height = imageSize.GetHeight();
             if (width > 0 && height > 0) {

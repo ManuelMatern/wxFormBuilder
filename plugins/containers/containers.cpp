@@ -737,7 +737,7 @@ public:
           obj->GetPropertyAsInteger(_("style")) | obj->GetPropertyAsInteger(_("window_style")));
 
         book->SetTabCtrlHeight(obj->GetPropertyAsInteger(_("tab_ctrl_height")));
-        book->SetUniformBitmapSize(obj->GetPropertyAsSize(_("uniform_bitmap_size")));
+        book->SetUniformBitmapSize(obj->GetPropertyAsPixelSize(_("uniform_bitmap_size"), nullptr));
 
         book->PushEventHandler(new ComponentEvtHandler(book, GetManager()));
 
