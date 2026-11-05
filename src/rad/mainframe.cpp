@@ -466,14 +466,16 @@ void MainFrame::SavePosition(const wxString& name)
         switch (m_style) {
 
             case wxFB_WIDE_GUI: {
-                int rightSash = -1 * (m_rightSplitter->GetSize().GetWidth() - m_rightSplitter->GetSashPosition());
-                config->Write(wxT("RightSplitterWidth"), rightSash);
+                // store the width of the properties panel, from the right side if the designer is left of it
+                int rightSash = m_rightSplitter->GetSashPosition();
 
                 if (m_rightSplitter->GetWindow1()->GetChildren()[0]->GetChildren()[0]->GetLabel() == _("Editor")) {
+                    rightSash = -1 * (m_rightSplitter->GetSize().GetWidth() - rightSash);
                     config->Write(wxT("RightSplitterType"), _("editor"));
                 } else {
                     config->Write(wxT("RightSplitterType"), _("prop"));
                 }
+                config->Write(wxT("RightSplitterWidth"), rightSash);
                 break;
             }
 
@@ -1665,7 +1667,8 @@ void MainFrame::CreateWideGui()
     } else {
         m_rightSplitter->SplitVertically(objectInspector, designer, m_rightSplitterWidth);
     }
-    m_rightSplitter->SetSashGravity(1);
+    // keep the size of the properties panel, the designer gets the remaining space
+    m_rightSplitter->SetSashGravity(m_rightSplitterType == _("editor") ? 1 : 0);
     m_rightSplitter->SetMinimumPaneSize(2);
 
     m_style = wxFB_WIDE_GUI;
@@ -1745,6 +1748,7 @@ void MainFrame::OnWindowSwap(wxCommandEvent&)
 
     m_rightSplitter->Unsplit();
     m_rightSplitter->SplitVertically(win2, win1);
+    m_rightSplitter->SetSashGravity(1 - m_rightSplitter->GetSashGravity());
 
     m_rightSplitter->SetSashPosition(sz.GetWidth() - pos);
 }
