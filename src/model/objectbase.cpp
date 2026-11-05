@@ -227,6 +227,20 @@ void Property::SplitParentProperty(std::map<wxString, wxString>* children)
 
 wxString Property::GetChildFromParent(const wxString& childName)
 {
+    if (m_info->GetType() == PT_BITMAP) {
+        // Allow templates to generate code depending on the source of the bitmap
+        wxString path;
+        wxString source;
+        wxSize icoSize;
+        TypeConv::ParseBitmapWithResource(m_value, &path, &source, &icoSize);
+        if (childName == wxT("source")) {
+            return source;
+        } else if (childName == wxT("path")) {
+            return path;
+        }
+        return wxEmptyString;
+    }
+
     std::map<wxString, wxString> children;
     SplitParentProperty(&children);
 

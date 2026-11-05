@@ -48,6 +48,8 @@ private:
     wxBitmap m_closeDisabled;
     wxColour m_colour1, m_colour2;
     wxString m_titleText;
+    wxBitmap m_icon;
+    wxBitmap m_scaledIcon;
     long m_style;
 
 protected:
@@ -64,6 +66,11 @@ public:
     void SetTitle(const wxString& title) { m_titleText = title; }
     wxString GetTitle() { return m_titleText; }
     void SetStyle(long style) { m_style = style; }
+    void SetIcon(const wxBitmap& icon)
+    {
+        m_icon = icon;
+        m_scaledIcon = wxNullBitmap;
+    }
 };
 
 
@@ -188,6 +195,16 @@ void wxInnerFrame::TitleBar::DrawTitleBar(wxDC& dc)
     colourG += incG;
     colourB += incB;
     }*/
+
+    // Draw icon, scaled to the height of the title text
+    if (m_icon.IsOk()) {
+        const auto iconSize = tbHeight - 2 * margin;
+        if (!m_scaledIcon.IsOk() || m_scaledIcon.GetHeight() != iconSize) {
+            m_scaledIcon = wxBitmap(m_icon.ConvertToImage().Scale(iconSize, iconSize, wxIMAGE_QUALITY_HIGH));
+        }
+        dc.DrawBitmap(m_scaledIcon, tbPosX + 2 * margin, tbPosY + margin, true);
+        txtPosX = tbPosX + iconSize + 4 * margin;
+    }
 
     // Draw title text
     wxFont font = dc.GetFont();
@@ -493,4 +510,9 @@ wxString wxInnerFrame::GetTitle()
 void wxInnerFrame::SetTitleStyle(long style)
 {
     m_titleBar->SetStyle(style);
+}
+
+void wxInnerFrame::SetTitleIcon(const wxBitmap& icon)
+{
+    m_titleBar->SetIcon(icon);
 }

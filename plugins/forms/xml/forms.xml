@@ -56,6 +56,7 @@ Written by
     </inherits>
     <property name="name" type="text">MyFrame</property>
     <property name="title" type="wxString_i18n"/>
+    <property name="icon" type="bitmap" type_templates="0" help="Sets the icon of the window by SetIcon(). Load From Resource and Load From Icon Resource load an icon resource, by wxICON() in C++. Other sources get converted from bitmap to icon. Python supports no resource sources, XRC supports only file, XRC and art provider sources."/>
     <property name="style" type="bitlist">
       <option name="wxDEFAULT_FRAME_STYLE" help="Defined as wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN"/>
       <option name="wxICONIZE" help="Display the frame iconized (minimized). Windows only."/>
@@ -149,6 +150,7 @@ Written by
     <inherits class="wxWindow"/>
     <property name="name" type="text">MyDialog</property>
     <property name="title" type="wxString_i18n"/>
+    <property name="icon" type="bitmap" type_templates="0" help="Sets the icon of the window by SetIcon(). Load From Resource and Load From Icon Resource load an icon resource, by wxICON() in C++. Other sources get converted from bitmap to icon. Python supports no resource sources, XRC supports only file, XRC and art provider sources."/>
     <property name="style" type="bitlist">
       <option name="wxCAPTION" help="Puts a caption on the dialog box."/>
       <option name="wxDEFAULT_DIALOG_STYLE" help="Equivalent to a combination of wxCAPTION, wxCLOSE_BOX and wxSYSTEM_MENU (the last one is not used under Unix)"/>

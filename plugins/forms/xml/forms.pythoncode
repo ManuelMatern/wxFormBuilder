@@ -96,8 +96,15 @@ Python code generation written by
       #ifequal $aui_managed "1"
       @{import wx.aui @}
     </template>
+    <!-- wxPython supports neither resources nor SVG resources, the icon is not set for these sources -->
     <template name="settings">
       self.SetSizeHints( $minimum_size, $maximum_size ) #nl
+
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From File || Load From Embedded File || Load From XRC || Load From Art Provider"
+        @{ self.SetIcon( wx.Icon( $icon ) ) #nl @}
+      @}
 
       #ifnotnull $window_extra_style
       @{ self.SetExtraStyle( $window_extra_style ) #nl @}
@@ -419,8 +426,15 @@ Python code generation written by
     <template name="include">
       #ifequal $aui_managed "1"
       @{import wx.aui @}</template>
+    <!-- wxPython supports neither resources nor SVG resources, the icon is not set for these sources -->
     <template name="settings">
       self.SetSizeHints( $minimum_size, $maximum_size ) #nl
+
+      #ifnotnull $icon
+      @{
+        #ifequal $icon/source "Load From File || Load From Embedded File || Load From XRC || Load From Art Provider"
+        @{ self.SetIcon( wx.Icon( $icon ) ) #nl @}
+      @}
 
       #ifnotnull $window_extra_style
       @{ self.SetExtraStyle( self.GetExtraStyle() | $window_extra_style ) #nl @}
