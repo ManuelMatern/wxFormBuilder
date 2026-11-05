@@ -1422,6 +1422,7 @@ void DesignerWindow::SetFrameWidgets(PObjectBase menubar, wxWindow* toolbar, wxW
 
 BEGIN_EVENT_TABLE(DesignerWindow::HighlightPaintHandler, wxEvtHandler)
 EVT_PAINT(DesignerWindow::HighlightPaintHandler::OnPaint)
+EVT_LEFT_DOWN(DesignerWindow::HighlightPaintHandler::OnLeftDown)
 END_EVENT_TABLE()
 
 
@@ -1441,4 +1442,12 @@ void DesignerWindow::HighlightPaintHandler::OnPaint(wxPaintEvent& event)
     }
 
     event.Skip();
+}
+
+void DesignerWindow::HighlightPaintHandler::OnLeftDown(wxMouseEvent& event)
+{
+    // Disabled top level form children deliver their clicks to the content panel
+    if (!VObjEvtHandler::RedirectToDisabledChild(m_window, event)) {
+        event.Skip();
+    }
 }

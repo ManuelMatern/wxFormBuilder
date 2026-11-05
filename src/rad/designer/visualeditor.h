@@ -60,6 +60,7 @@ private:
     public:
         HighlightPaintHandler(wxWindow* win);
         void OnPaint(wxPaintEvent& event);
+        void OnLeftDown(wxMouseEvent& event);
     };
 
 protected:
