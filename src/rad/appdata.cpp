@@ -544,7 +544,15 @@ bool ApplicationData::LoadProject(const wxString& file, bool justGenerate)
         return false;
     }
 
-    if (!justGenerate && !m_ipc->VerifySingleInstance(file)) {
+    if (!justGenerate && !m_ipc->VerifySingleInstance(file, false)) {
+        if (
+          wxYES == wxMessageBox(
+                     wxString::Format(
+                       _("The file %s is already open in another instance.\nWould you like to switch to that instance?"),
+                       filename.GetFullPath()),
+                     _("Open in Another Instance"), wxICON_QUESTION | wxYES_NO, wxTheApp->GetTopWindow())) {
+            m_ipc->VerifySingleInstance(file, true);
+        }
         return false;
     }
 
