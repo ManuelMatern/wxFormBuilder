@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.2.1+matern.1] - 2026-11-05
+
 ### Added
 
 - Add unit DIP for properties of type `wxPoint` and `wxSize` and for the sizer properties `border`, `vgap`, `hgap` and
@@ -1719,7 +1721,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Background color issues in the palette
 
-[unreleased]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.2.1...HEAD
+[unreleased]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1%2Bmatern.1...HEAD
+[4.2.1+matern.1]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1...v4.2.1%2Bmatern.1
 [4.2.1]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.0.0...v4.1.0
