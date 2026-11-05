@@ -9,9 +9,11 @@
 
 
 ; MyAppVer gets parsed from source file
+; MyAppVerSuffix marks this unofficial fork build, it is not part of the numeric file version
 #define MyAppName "wxFormBuilder"
-#define MyAppPublisher "Jose Antonio Hurtado"
-#define MyAppURL "http://wxformbuilder.org"
+#define MyAppVerSuffix "+matern.1"
+#define MyAppPublisher "Manuel Matern"
+#define MyAppURL "https://github.com/ManuelMatern/wxFormBuilder"
 #define MyAppExeName "wxFormBuilder.exe"
 
 ; The #define Arch is expected to be supplied externally and must contain a MinGW-w64 architecture.
@@ -55,8 +57,8 @@
 
 [Setup]
 AppName={#MyAppName}
-AppVersion={#MyAppVer}
-AppVerName={#MyAppName} {#MyAppVer}
+AppVersion={#MyAppVer}{#MyAppVerSuffix}
+AppVerName={#MyAppName} {#MyAppVer}{#MyAppVerSuffix}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -67,7 +69,7 @@ ArchitecturesAllowed={#MyAppArchitecture}
 ArchitecturesInstallIn64BitMode={#MyAppArchitecture}
 MinVersion=6.1sp1
 OutputDir=.
-OutputBaseFilename={#MyAppName}-{#MyAppVer}{#MySetupArchitecture}
+OutputBaseFilename={#MyAppName}-{#MyAppVer}{#MyAppVerSuffix}{#MySetupArchitecture}
 Compression=lzma/ultra
 SolidCompression=true
 InternalCompressLevel=ultra
