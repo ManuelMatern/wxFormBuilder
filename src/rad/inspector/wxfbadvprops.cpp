@@ -29,6 +29,8 @@
 
 #include "wxfbadvprops.h"
 
+#include <algorithm>
+
 #include <wx/regex.h>
 
 #include "rad/appdata.h"
@@ -299,10 +301,56 @@ wxPGProperty* wxFBBitmapProperty::CreatePropertySource(int sourceIndex)
     return srcProp;
 }
 
+namespace
+{
+// wxImageFileProperty loads relative paths from the working directory, the paths are relative to the project
+class ProjectImageFileProperty : public wxImageFileProperty
+{
+public:
+    using wxImageFileProperty::wxImageFileProperty;
+
+    void OnSetValue() override
+    {
+        wxImageFileProperty::OnSetValue();
+        m_preview = wxNullBitmap;
+        if (m_image.IsOk()) {
+            return;
+        }
+
+        auto filename = GetFileName();
+        if (filename.IsOk() && filename.IsRelative() && filename.MakeAbsolute(AppData()->GetProjectPath()) &&
+            filename.FileExists()) {
+            wxLogNull stopLogging;
+            SetImage(wxImage(filename.GetFullPath()));
+        }
+    }
+
+    // the preview area has a fixed width but the height of the row, keep the aspect ratio of the image
+    void OnCustomPaint(wxDC& dc, const wxRect& rect, wxPGPaintData& paintData) override
+    {
+        if (!m_image.IsOk()) {
+            wxImageFileProperty::OnCustomPaint(dc, rect, paintData);
+            return;
+        }
+
+        const auto scale = std::min(
+          static_cast<double>(rect.width) / m_image.GetWidth(), static_cast<double>(rect.height) / m_image.GetHeight());
+        const wxSize size(std::max(1, wxRound(m_image.GetWidth() * scale)), std::max(1, wxRound(m_image.GetHeight() * scale)));
+        if (!m_preview.IsOk() || m_preview.GetSize() != size) {
+            m_preview = wxBitmap(m_image.Scale(size.x, size.y, wxIMAGE_QUALITY_HIGH));
+        }
+        dc.DrawBitmap(m_preview, rect.x + (rect.width - size.x) / 2, rect.y + (rect.height - size.y) / 2, true);
+    }
+
+private:
+    wxBitmap m_preview;
+};
+}  // namespace
+
 wxPGProperty* wxFBBitmapProperty::CreatePropertyFilePath()
 {
     // Add 'file_path' property (common for 'Load From File' and 'Load From Embedded File' choices)
-    wxPGProperty* propFilePath = new wxImageFileProperty(wxT("file_path"), wxPG_LABEL);
+    wxPGProperty* propFilePath = new ProjectImageFileProperty(wxT("file_path"), wxPG_LABEL);
     propFilePath->SetHelpString(_("Path to the image file."));
 
     if (!gs_imageInitialPath.IsEmpty()) {
