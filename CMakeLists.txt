@@ -93,10 +93,11 @@ set(wxWidgetsComponentsRequired media xrc richtext propgrid ribbon stc html aui 
 if(WXFB_WXWIDGETS_ENABLE_30)
   list(PREPEND wxWidgetsComponentsRequired adv)
 endif()
-find_package(wxWidgets ${wxWidgetsVersion} CONFIG COMPONENTS ${wxWidgetsComponentsRequired})
+# Search quietly, the final module mode search reports errors
+find_package(wxWidgets ${wxWidgetsVersion} CONFIG QUIET COMPONENTS ${wxWidgetsComponentsRequired})
 # The CMake config of wxWidgets accepts only the same minor version, so search the newer version explicitly
 if(NOT wxWidgets_FOUND AND NOT WXFB_WXWIDGETS_ENABLE_30)
-  find_package(wxWidgets 3.3 CONFIG COMPONENTS ${wxWidgetsComponentsRequired})
+  find_package(wxWidgets 3.3 CONFIG QUIET COMPONENTS ${wxWidgetsComponentsRequired})
 endif()
 if(NOT wxWidgets_FOUND)
   find_package(wxWidgets ${wxWidgetsVersion} MODULE REQUIRED ${wxWidgetsComponentsRequired})
