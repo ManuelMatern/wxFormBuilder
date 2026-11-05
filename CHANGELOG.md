@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Fix the macOS app bundle creation to work in current environments, the required libraries are now stored in `Contents/Frameworks`
+- Ask before switching to another instance if the project to load is already open there, instead of switching silently
 
 ## [4.2.1] - 2024-05-29
 
