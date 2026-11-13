@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.2.1+matern.2] - 2026-11-13
+
 ### Fixed
 
 - Fix flickering of the designer preview on Windows when changing properties
@@ -1725,7 +1727,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Background color issues in the palette
 
-[unreleased]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1%2Bmatern.1...HEAD
+[unreleased]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1%2Bmatern.2...HEAD
+[4.2.1+matern.2]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1%2Bmatern.1...v4.2.1%2Bmatern.2
 [4.2.1+matern.1]: https://github.com/ManuelMatern/wxFormBuilder/compare/v4.2.1...v4.2.1%2Bmatern.1
 [4.2.1]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/wxFormBuilder/wxFormBuilder/compare/v4.1.0...v4.2.0

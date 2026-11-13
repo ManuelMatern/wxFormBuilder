@@ -11,7 +11,7 @@
 ; MyAppVer gets parsed from source file
 ; MyAppVerSuffix marks this unofficial fork build, it is not part of the numeric file version
 #define MyAppName "wxFormBuilder"
-#define MyAppVerSuffix "+matern.1"
+#define MyAppVerSuffix "+matern.2"
 #define MyAppPublisher "Manuel Matern"
 #define MyAppURL "https://github.com/ManuelMatern/wxFormBuilder"
 #define MyAppExeName "wxFormBuilder.exe"
