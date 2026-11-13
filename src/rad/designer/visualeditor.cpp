@@ -97,6 +97,10 @@ VisualEditor::VisualEditor(wxWindow* parent) :
     SetScrollRate(5, 5);
 
     m_back = new DesignerWindow(this, wxID_ANY, wxPoint(10, 10));
+#ifdef __WXMSW__
+    // Paint the whole recreated widget tree off-screen (WS_EX_COMPOSITED) to avoid flicker
+    m_back->SetDoubleBuffered(true);
+#endif
     m_back->GetEventHandler()->Connect(
       wxID_ANY, wxEVT_LEFT_DOWN, wxMouseEventHandler(VisualEditor::OnClickBackPanel), NULL, this);
 
@@ -1182,6 +1186,14 @@ void VisualEditor::OnObjectRemoved(wxFBObjectEvent&)
 void VisualEditor::OnPropertyModified(wxFBPropertyEvent&)
 {
     if (!m_stopModifiedEvent) {
+#if !defined(__WXGTK__)
+        // Keep the whole rebuild (incl. reselection and scroll update) frozen to avoid flicker,
+        // Freeze() is reference counted so the nested Freeze() in Create() is fine
+        const bool frozen = IsShown();
+        if (frozen) {
+            Freeze();
+        }
+#endif
         PObjectBase aux = m_back->GetSelectedObject();
         Create();
         if (aux) {
@@ -1189,6 +1201,11 @@ void VisualEditor::OnPropertyModified(wxFBPropertyEvent&)
             this->ProcessEvent(objEvent);
         }
         UpdateVirtualSize();
+#if !defined(__WXGTK__)
+        if (frozen) {
+            Thaw();
+        }
+#endif
     }
 }
 

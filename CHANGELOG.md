@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix flickering of the designer preview on Windows when changing properties
+
 ## [4.2.1+matern.1] - 2026-11-05
 
 ### Added
